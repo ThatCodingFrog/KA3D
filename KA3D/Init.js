@@ -6,4 +6,4 @@ function Init() {
   scene = new Scene();
 }
 
-export { Init }
+export { Init, scene, camera, renderer, world }
