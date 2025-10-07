@@ -56404,6 +56404,9 @@ void main() {
 
 	function Init() {
 	  if(window.parent !== undefined) cancelAnimationFrame(window.parent.raf);
+
+	  document.body.style.setProperty("overflow", "hidden");
+	  
 	  exports.scene = new Scene();
 	  exports.camera = new PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 10000);
 	  exports.renderer = new WebGLRenderer({
@@ -56411,6 +56414,8 @@ void main() {
 	    preserveDrawingBuffer: true
 	  });
 
+	  document.body.appendChild( exports.renderer.domElement );
+	  
 	  exports.material = new MeshNormalMaterial();
 	  exports.world = new World();
 	}
@@ -56418,6 +56423,13 @@ void main() {
 	let physMeshes = [], threeMeshes = [];
 
 	function Render() {
+	  if(window.parent !== undefined) window.parent.raf = requestAnimationFrame(Render);
+	  else requestAnimationFrame(Render);
+
+	  exports.world.step( 1 / 60 );
+
+	  exports.renderer.render(exports.scene, exports.camera);
+	  
 	  for(var i = 0; i < threeMeshes.length; i++) {
 	    threeMeshes[i].position.copy(physMeshes[i].position);
 	    threeMeshes[i].quaternion.copy(physMeshes[i].quaternion);
