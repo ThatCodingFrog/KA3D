@@ -9,6 +9,9 @@ let scene, camera, renderer, world, material;
 
 function Init() {
   if(window.parent !== undefined) cancelAnimationFrame(window.parent.raf);
+
+  document.body.style.setProperty("overflow", "hidden");
+  
   scene = new Scene();
   camera = new PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 10000);
   renderer = new WebGLRenderer({
@@ -16,6 +19,8 @@ function Init() {
     preserveDrawingBuffer: true
   });
 
+  document.body.appendChild( renderer.domElement );
+  
   material = new MeshNormalMaterial();
   world = new World();
 }
