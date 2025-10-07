@@ -1,8 +1,8 @@
 import { BoxGeometry } from "../src/three/src/geometries/BoxGeometry.js";
 import { Mesh } from "../src/three/src/objects/Mesh.js";
 import { Box, Body, Vec3 } from "../src/physics/cannon-es.js";
-import { scene, world, material } from "./Init.js";
-import { physMeshes } from "./Render.js";
+import { scene, world, material } from "../Init.js";
+import { physMeshes } from "../Render.js";
 
 class Box {
   constructor(w = 100, h = 100, d = 100, mass = 1) {
