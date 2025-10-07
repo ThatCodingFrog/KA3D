@@ -12,6 +12,8 @@ class Box {
     this._physShape = new Box(new Vec3(w/2, h/2, d/2))
     this.physShape = new Body({mass: mass, shape: this._physShape});
     world.addBody(this.physShape);
+
+    physMeshes.push(this.physShape);
   }
 
   add(mesh, pos, rot) {
