@@ -34,3 +34,4 @@ function setMaterial(materialType = "Normal", attributes = {}) {
     default:
       error(materialType, "is not a valid material type or currently supported in KA3D");
   }
+}

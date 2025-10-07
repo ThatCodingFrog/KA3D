@@ -1,10 +1,10 @@
-import { BoxGeometry } from "../src/three/src/geometries/BoxGeometry.js";
-import { Mesh } from "../src/three/src/objects/Mesh.js";
-import { Box, Body, Vec3 } from "../src/physics/cannon-es.js";
+import { BoxGeometry } from "../../src/three/src/geometries/BoxGeometry.js";
+import { Mesh } from "../../src/three/src/objects/Mesh.js";
+import { Box, Body, Vec3 } from "../../src/physics/cannon-es.js";
 import { scene, world, material } from "../Init.js";
 import { physMeshes, threeMeshes } from "../Render.js";
 
-class Box {
+class KABox {
   constructor(w = 100, h = 100, d = 100, mass = 1) {
     this.shape = new Mesh(new BoxGeometry(w, h, d), material);
     scene.add(this.shape);
@@ -24,3 +24,5 @@ class Box {
     return this;
   }
 }
+
+export { KABox }
