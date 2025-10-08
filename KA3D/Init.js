@@ -14,6 +14,9 @@ function Init() {
   
   scene = new Scene();
   camera = new PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 10000);
+
+  scene.add(camera);
+  
   renderer = new WebGLRenderer({
     antialias: true,
     preserveDrawingBuffer: true
