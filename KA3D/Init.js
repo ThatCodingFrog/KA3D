@@ -19,7 +19,14 @@ function Init() {
     preserveDrawingBuffer: true
   });
 
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  
   document.body.appendChild( renderer.domElement );
+
+  var canvas = document.getElementsByTagName("canvas")[0];
+  canvas.style.position = "absolute";
+  canvas.style.left = "0px";
+  canvas.style.top = "0px";
   
   material = new MeshNormalMaterial();
   world = new World();
