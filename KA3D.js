@@ -56414,7 +56414,14 @@ void main() {
 	    preserveDrawingBuffer: true
 	  });
 
+	  exports.renderer.setSize(window.innerWidth, window.innerHeight);
+	  
 	  document.body.appendChild( exports.renderer.domElement );
+
+	  var canvas = document.getElementsByTagName("canvas")[0];
+	  canvas.style.position = "absolute";
+	  canvas.style.left = "0px";
+	  canvas.style.top = "0px";
 	  
 	  exports.material = new MeshNormalMaterial();
 	  exports.world = new World();
