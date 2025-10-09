@@ -1,10 +1,9 @@
 import { Scene } from "../src/three/src/scenes/Scene.js";
 import { WebGLRenderer } from "../src/three/src/renderers/WebGLRenderer.js";
 import { PerspectiveCamera } from "../src/three/src/cameras/PerspectiveCamera.js";
-import { MeshNormalMaterial } from "../src/three/src/materials/MeshNormalMaterial.js";
 import { Vector3 } from "../src/three/src/math/Vector3.js";
 
-import { EventTarget, World, Vec3 } from "../src/physics/cannon-es.js";
+import { World, Vec3 } from "../src/physics/cannon-es.js";
 
 let scene, camera, renderer, world;
 
