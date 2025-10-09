@@ -1,11 +1,11 @@
-import { material } from "./Init.js";
-
 import { MeshBasicMaterial } from "../src/three/src/materials/MeshBasicMaterial.js";
 import { MeshNormalMaterial } from "../src/three/src/materials/MeshNormalMaterial.js";
 import { MeshPhongMaterial } from "../src/three/src/materials/MeshPhongMaterial.js";
 import { MeshPhysicalMaterial } from "../src/three/src/materials/MeshPhysicalMaterial.js";
 import { MeshToonMaterial } from "../src/three/src/materials/MeshToonMaterial.js";
 import { error } from "../src/three/src/utils.js";
+
+let material = new MeshNormalMaterial();
 
 const 
   NORMAL = "Normal",
@@ -35,3 +35,5 @@ function setMaterial(materialType = "Normal", attributes = {}) {
       error(materialType, "is not a valid material type or currently supported in KA3D");
   }
 }
+
+export { setMaterial, material, NORMAL, BASIC, PHONG, PHYSICAL, TOON }

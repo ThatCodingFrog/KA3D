@@ -3857,7 +3857,7 @@ class Body extends EventTarget {
 
     this.updateAABB();
     halfExtents.set((this.aabb.upperBound.x - this.aabb.lowerBound.x) / 2, (this.aabb.upperBound.y - this.aabb.lowerBound.y) / 2, (this.aabb.upperBound.z - this.aabb.lowerBound.z) / 2);
-    Box.calculateInertia(halfExtents, this.mass, I);
+    PhysBox.calculateInertia(halfExtents, this.mass, I);
     this.invInertia.set(I.x > 0 && !fixed ? 1.0 / I.x : 0, I.y > 0 && !fixed ? 1.0 / I.y : 0, I.z > 0 && !fixed ? 1.0 / I.z : 0);
     this.updateInertiaWorld(true);
   }

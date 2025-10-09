@@ -4,9 +4,9 @@ import { PerspectiveCamera } from "../src/three/src/cameras/PerspectiveCamera.js
 import { MeshNormalMaterial } from "../src/three/src/materials/MeshNormalMaterial.js";
 import { Vector3 } from "../src/three/src/math/Vector3.js";
 
-import { EventTarget, World } from "../src/physics/cannon-es.js";
+import { EventTarget, World, Vec3 } from "../src/physics/cannon-es.js";
 
-let scene, camera, renderer, world, material;
+let scene, camera, renderer, world;
 
 function Init() {
   if(window.parent !== undefined) cancelAnimationFrame(window.parent.raf);
@@ -33,10 +33,13 @@ function Init() {
   var canvas = document.getElementsByTagName("canvas")[0];
   canvas.style.position = "absolute";
   canvas.style.left = "0px";
-  canvas.style.top = "0px";
-  
-  material = new MeshNormalMaterial();
+    canvas.style.top = "0px";
+
   world = new World();
 }
 
-export { Init, scene, camera, renderer, world, material }
+function EnablePhysics(gravityVector = new Vec3(0, -9.81, 0)) {
+    world.gravity = gravityVector;
+}
+
+export { Init, scene, camera, renderer, world, material, EnablePhysics, Vec3 }

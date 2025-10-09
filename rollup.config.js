@@ -4,6 +4,6 @@ export default {
 		file: "KA3D.js",
 		format: "iife",
 		name: "KA3D",
-		sourcemap: true
+		sourcemap: false
 	},
 };
