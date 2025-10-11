@@ -2,7 +2,7 @@ import { BoxGeometry } from "../../src/three/src/geometries/BoxGeometry.js";
 import { Mesh } from "../../src/three/src/objects/Mesh.js";
 import { PhysBox, Body, Vec3 } from "../../src/physics/cannon-es.js";
 import { scene, world } from "../Init.js";
-import { material } from "../setMaterial.js";
+import { material } from "../SetMaterial.js";
 import { physMeshes, threeMeshes } from "../Render.js";
 
 class Box {

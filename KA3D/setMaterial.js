@@ -14,7 +14,7 @@ const
   PHYSICAL = "Physical",
   TOON = "Toon";
 
-function setMaterial(materialType = "Normal", attributes = {}) {
+function SetMaterial(materialType = "Normal", attributes = {}) {
   switch(materialType) {
     case NORMAL:
       material = new MeshNormalMaterial(attributes);
@@ -36,4 +36,4 @@ function setMaterial(materialType = "Normal", attributes = {}) {
   }
 }
 
-export { setMaterial, material, NORMAL, BASIC, PHONG, PHYSICAL, TOON }
+export { SetMaterial, material, NORMAL, BASIC, PHONG, PHYSICAL, TOON }

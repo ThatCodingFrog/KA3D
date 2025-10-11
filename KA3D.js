@@ -58124,7 +58124,7 @@ void main() {
 	  PHYSICAL = "Physical",
 	  TOON = "Toon";
 
-	function setMaterial(materialType = "Normal", attributes = {}) {
+	function SetMaterial(materialType = "Normal", attributes = {}) {
 	  switch(materialType) {
 	    case NORMAL:
 	      exports.material = new MeshNormalMaterial(attributes);
@@ -58174,18 +58174,729 @@ void main() {
 	  }
 	};
 
+	/**
+	 * Abstract base class for lights - all other light types inherit the
+	 * properties and methods described here.
+	 *
+	 * @abstract
+	 * @augments Object3D
+	 */
+	class Light extends Object3D {
+
+		/**
+		 * Constructs a new light.
+		 *
+		 * @param {(number|Color|string)} [color=0xffffff] - The light's color.
+		 * @param {number} [intensity=1] - The light's strength/intensity.
+		 */
+		constructor( color, intensity = 1 ) {
+
+			super();
+
+			/**
+			 * This flag can be used for type testing.
+			 *
+			 * @type {boolean}
+			 * @readonly
+			 * @default true
+			 */
+			this.isLight = true;
+
+			this.type = 'Light';
+
+			/**
+			 * The light's color.
+			 *
+			 * @type {Color}
+			 */
+			this.color = new Color( color );
+
+			/**
+			 * The light's intensity.
+			 *
+			 * @type {number}
+			 * @default 1
+			 */
+			this.intensity = intensity;
+
+		}
+
+		/**
+		 * Frees the GPU-related resources allocated by this instance. Call this
+		 * method whenever this instance is no longer used in your app.
+		 */
+		dispose() {
+
+			// Empty here in base class; some subclasses override.
+
+		}
+
+		copy( source, recursive ) {
+
+			super.copy( source, recursive );
+
+			this.color.copy( source.color );
+			this.intensity = source.intensity;
+
+			return this;
+
+		}
+
+		toJSON( meta ) {
+
+			const data = super.toJSON( meta );
+
+			data.object.color = this.color.getHex();
+			data.object.intensity = this.intensity;
+
+			if ( this.groundColor !== undefined ) data.object.groundColor = this.groundColor.getHex();
+
+			if ( this.distance !== undefined ) data.object.distance = this.distance;
+			if ( this.angle !== undefined ) data.object.angle = this.angle;
+			if ( this.decay !== undefined ) data.object.decay = this.decay;
+			if ( this.penumbra !== undefined ) data.object.penumbra = this.penumbra;
+
+			if ( this.shadow !== undefined ) data.object.shadow = this.shadow.toJSON();
+			if ( this.target !== undefined ) data.object.target = this.target.uuid;
+
+			return data;
+
+		}
+
+	}
+
+	/**
+	 * This light globally illuminates all objects in the scene equally.
+	 *
+	 * It cannot be used to cast shadows as it does not have a direction.
+	 *
+	 * ```js
+	 * const light = new THREE.AmbientLight( 0x404040 ); // soft white light
+	 * scene.add( light );
+	 * ```
+	 *
+	 * @augments Light
+	 */
+	class AmbientLight extends Light {
+
+		/**
+		 * Constructs a new ambient light.
+		 *
+		 * @param {(number|Color|string)} [color=0xffffff] - The light's color.
+		 * @param {number} [intensity=1] - The light's strength/intensity.
+		 */
+		constructor( color, intensity ) {
+
+			super( color, intensity );
+
+			/**
+			 * This flag can be used for type testing.
+			 *
+			 * @type {boolean}
+			 * @readonly
+			 * @default true
+			 */
+			this.isAmbientLight = true;
+
+			this.type = 'AmbientLight';
+
+		}
+
+	}
+
+	const _projScreenMatrix$1 = /*@__PURE__*/ new Matrix4();
+	const _lightPositionWorld$1 = /*@__PURE__*/ new Vector3();
+	const _lookTarget$1 = /*@__PURE__*/ new Vector3();
+
+	/**
+	 * Abstract base class for light shadow classes. These classes
+	 * represent the shadow configuration for different light types.
+	 *
+	 * @abstract
+	 */
+	class LightShadow {
+
+		/**
+		 * Constructs a new light shadow.
+		 *
+		 * @param {Camera} camera - The light's view of the world.
+		 */
+		constructor( camera ) {
+
+			/**
+			 * The light's view of the world.
+			 *
+			 * @type {Camera}
+			 */
+			this.camera = camera;
+
+			/**
+			 * The intensity of the shadow. The default is `1`.
+			 * Valid values are in the range `[0, 1]`.
+			 *
+			 * @type {number}
+			 * @default 1
+			 */
+			this.intensity = 1;
+
+			/**
+			 * Shadow map bias, how much to add or subtract from the normalized depth
+			 * when deciding whether a surface is in shadow.
+			 *
+			 * The default is `0`. Very tiny adjustments here (in the order of `0.0001`)
+			 * may help reduce artifacts in shadows.
+			 *
+			 * @type {number}
+			 * @default 0
+			 */
+			this.bias = 0;
+
+			/**
+			 * Defines how much the position used to query the shadow map is offset along
+			 * the object normal. The default is `0`. Increasing this value can be used to
+			 * reduce shadow acne especially in large scenes where light shines onto
+			 * geometry at a shallow angle. The cost is that shadows may appear distorted.
+			 *
+			 * @type {number}
+			 * @default 0
+			 */
+			this.normalBias = 0;
+
+			/**
+			 * Setting this to values greater than 1 will blur the edges of the shadow.
+			 * High values will cause unwanted banding effects in the shadows - a greater
+			 * map size will allow for a higher value to be used here before these effects
+			 * become visible.
+			 *
+			 * The property has no effect when the shadow map type is `PCFSoftShadowMap` and
+			 * and it is recommended to increase softness by decreasing the shadow map size instead.
+			 *
+			 * The property has no effect when the shadow map type is `BasicShadowMap`.
+			 *
+			 * @type {number}
+			 * @default 1
+			 */
+			this.radius = 1;
+
+			/**
+			 * The amount of samples to use when blurring a VSM shadow map.
+			 *
+			 * @type {number}
+			 * @default 8
+			 */
+			this.blurSamples = 8;
+
+			/**
+			 * Defines the width and height of the shadow map. Higher values give better quality
+			 * shadows at the cost of computation time. Values must be powers of two.
+			 *
+			 * @type {Vector2}
+			 * @default (512,512)
+			 */
+			this.mapSize = new Vector2( 512, 512 );
+
+			/**
+			 * The type of shadow texture. The default is `UnsignedByteType`.
+			 *
+			 * @type {number}
+			 * @default UnsignedByteType
+			 */
+			this.mapType = UnsignedByteType;
+
+			/**
+			 * The depth map generated using the internal camera; a location beyond a
+			 * pixel's depth is in shadow. Computed internally during rendering.
+			 *
+			 * @type {?RenderTarget}
+			 * @default null
+			 */
+			this.map = null;
+
+			/**
+			 * The distribution map generated using the internal camera; an occlusion is
+			 * calculated based on the distribution of depths. Computed internally during
+			 * rendering.
+			 *
+			 * @type {?RenderTarget}
+			 * @default null
+			 */
+			this.mapPass = null;
+
+			/**
+			 * Model to shadow camera space, to compute location and depth in shadow map.
+			 * This is computed internally during rendering.
+			 *
+			 * @type {Matrix4}
+			 */
+			this.matrix = new Matrix4();
+
+			/**
+			 * Enables automatic updates of the light's shadow. If you do not require dynamic
+			 * lighting / shadows, you may set this to `false`.
+			 *
+			 * @type {boolean}
+			 * @default true
+			 */
+			this.autoUpdate = true;
+
+			/**
+			 * When set to `true`, shadow maps will be updated in the next `render` call.
+			 * If you have set {@link LightShadow#autoUpdate} to `false`, you will need to
+			 * set this property to `true` and then make a render call to update the light's shadow.
+			 *
+			 * @type {boolean}
+			 * @default false
+			 */
+			this.needsUpdate = false;
+
+			this._frustum = new Frustum();
+			this._frameExtents = new Vector2( 1, 1 );
+
+			this._viewportCount = 1;
+
+			this._viewports = [
+
+				new Vector4( 0, 0, 1, 1 )
+
+			];
+
+		}
+
+		/**
+		 * Used internally by the renderer to get the number of viewports that need
+		 * to be rendered for this shadow.
+		 *
+		 * @return {number} The viewport count.
+		 */
+		getViewportCount() {
+
+			return this._viewportCount;
+
+		}
+
+		/**
+		 * Gets the shadow cameras frustum. Used internally by the renderer to cull objects.
+		 *
+		 * @return {Frustum} The shadow camera frustum.
+		 */
+		getFrustum() {
+
+			return this._frustum;
+
+		}
+
+		/**
+		 * Update the matrices for the camera and shadow, used internally by the renderer.
+		 *
+		 * @param {Light} light - The light for which the shadow is being rendered.
+		 */
+		updateMatrices( light ) {
+
+			const shadowCamera = this.camera;
+			const shadowMatrix = this.matrix;
+
+			_lightPositionWorld$1.setFromMatrixPosition( light.matrixWorld );
+			shadowCamera.position.copy( _lightPositionWorld$1 );
+
+			_lookTarget$1.setFromMatrixPosition( light.target.matrixWorld );
+			shadowCamera.lookAt( _lookTarget$1 );
+			shadowCamera.updateMatrixWorld();
+
+			_projScreenMatrix$1.multiplyMatrices( shadowCamera.projectionMatrix, shadowCamera.matrixWorldInverse );
+			this._frustum.setFromProjectionMatrix( _projScreenMatrix$1, shadowCamera.coordinateSystem, shadowCamera.reversedDepth );
+
+			if ( shadowCamera.reversedDepth ) {
+
+				shadowMatrix.set(
+					0.5, 0.0, 0.0, 0.5,
+					0.0, 0.5, 0.0, 0.5,
+					0.0, 0.0, 1.0, 0.0,
+					0.0, 0.0, 0.0, 1.0
+				);
+
+			} else {
+
+				shadowMatrix.set(
+					0.5, 0.0, 0.0, 0.5,
+					0.0, 0.5, 0.0, 0.5,
+					0.0, 0.0, 0.5, 0.5,
+					0.0, 0.0, 0.0, 1.0
+				);
+
+			}
+
+			shadowMatrix.multiply( _projScreenMatrix$1 );
+
+		}
+
+		/**
+		 * Returns a viewport definition for the given viewport index.
+		 *
+		 * @param {number} viewportIndex - The viewport index.
+		 * @return {Vector4} The viewport.
+		 */
+		getViewport( viewportIndex ) {
+
+			return this._viewports[ viewportIndex ];
+
+		}
+
+		/**
+		 * Returns the frame extends.
+		 *
+		 * @return {Vector2} The frame extends.
+		 */
+		getFrameExtents() {
+
+			return this._frameExtents;
+
+		}
+
+		/**
+		 * Frees the GPU-related resources allocated by this instance. Call this
+		 * method whenever this instance is no longer used in your app.
+		 */
+		dispose() {
+
+			if ( this.map ) {
+
+				this.map.dispose();
+
+			}
+
+			if ( this.mapPass ) {
+
+				this.mapPass.dispose();
+
+			}
+
+		}
+
+		/**
+		 * Copies the values of the given light shadow instance to this instance.
+		 *
+		 * @param {LightShadow} source - The light shadow to copy.
+		 * @return {LightShadow} A reference to this light shadow instance.
+		 */
+		copy( source ) {
+
+			this.camera = source.camera.clone();
+
+			this.intensity = source.intensity;
+
+			this.bias = source.bias;
+			this.radius = source.radius;
+
+			this.autoUpdate = source.autoUpdate;
+			this.needsUpdate = source.needsUpdate;
+			this.normalBias = source.normalBias;
+			this.blurSamples = source.blurSamples;
+
+			this.mapSize.copy( source.mapSize );
+
+			return this;
+
+		}
+
+		/**
+		 * Returns a new light shadow instance with copied values from this instance.
+		 *
+		 * @return {LightShadow} A clone of this instance.
+		 */
+		clone() {
+
+			return new this.constructor().copy( this );
+
+		}
+
+		/**
+		 * Serializes the light shadow into JSON.
+		 *
+		 * @return {Object} A JSON object representing the serialized light shadow.
+		 * @see {@link ObjectLoader#parse}
+		 */
+		toJSON() {
+
+			const object = {};
+
+			if ( this.intensity !== 1 ) object.intensity = this.intensity;
+			if ( this.bias !== 0 ) object.bias = this.bias;
+			if ( this.normalBias !== 0 ) object.normalBias = this.normalBias;
+			if ( this.radius !== 1 ) object.radius = this.radius;
+			if ( this.mapSize.x !== 512 || this.mapSize.y !== 512 ) object.mapSize = this.mapSize.toArray();
+
+			object.camera = this.camera.toJSON( false ).object;
+			delete object.camera.matrix;
+
+			return object;
+
+		}
+
+	}
+
+	const _projScreenMatrix = /*@__PURE__*/ new Matrix4();
+	const _lightPositionWorld = /*@__PURE__*/ new Vector3();
+	const _lookTarget = /*@__PURE__*/ new Vector3();
+
+	/**
+	 * Represents the shadow configuration of point lights.
+	 *
+	 * @augments LightShadow
+	 */
+	class PointLightShadow extends LightShadow {
+
+		/**
+		 * Constructs a new point light shadow.
+		 */
+		constructor() {
+
+			super( new PerspectiveCamera( 90, 1, 0.5, 500 ) );
+
+			/**
+			 * This flag can be used for type testing.
+			 *
+			 * @type {boolean}
+			 * @readonly
+			 * @default true
+			 */
+			this.isPointLightShadow = true;
+
+			this._frameExtents = new Vector2( 4, 2 );
+
+			this._viewportCount = 6;
+
+			this._viewports = [
+				// These viewports map a cube-map onto a 2D texture with the
+				// following orientation:
+				//
+				//  xzXZ
+				//   y Y
+				//
+				// X - Positive x direction
+				// x - Negative x direction
+				// Y - Positive y direction
+				// y - Negative y direction
+				// Z - Positive z direction
+				// z - Negative z direction
+
+				// positive X
+				new Vector4( 2, 1, 1, 1 ),
+				// negative X
+				new Vector4( 0, 1, 1, 1 ),
+				// positive Z
+				new Vector4( 3, 1, 1, 1 ),
+				// negative Z
+				new Vector4( 1, 1, 1, 1 ),
+				// positive Y
+				new Vector4( 3, 0, 1, 1 ),
+				// negative Y
+				new Vector4( 1, 0, 1, 1 )
+			];
+
+			this._cubeDirections = [
+				new Vector3( 1, 0, 0 ), new Vector3( -1, 0, 0 ), new Vector3( 0, 0, 1 ),
+				new Vector3( 0, 0, -1 ), new Vector3( 0, 1, 0 ), new Vector3( 0, -1, 0 )
+			];
+
+			this._cubeUps = [
+				new Vector3( 0, 1, 0 ), new Vector3( 0, 1, 0 ), new Vector3( 0, 1, 0 ),
+				new Vector3( 0, 1, 0 ), new Vector3( 0, 0, 1 ),	new Vector3( 0, 0, -1 )
+			];
+
+		}
+
+		/**
+		 * Update the matrices for the camera and shadow, used internally by the renderer.
+		 *
+		 * @param {Light} light - The light for which the shadow is being rendered.
+		 * @param {number} [viewportIndex=0] - The viewport index.
+		 */
+		updateMatrices( light, viewportIndex = 0 ) {
+
+			const camera = this.camera;
+			const shadowMatrix = this.matrix;
+
+			const far = light.distance || camera.far;
+
+			if ( far !== camera.far ) {
+
+				camera.far = far;
+				camera.updateProjectionMatrix();
+
+			}
+
+			_lightPositionWorld.setFromMatrixPosition( light.matrixWorld );
+			camera.position.copy( _lightPositionWorld );
+
+			_lookTarget.copy( camera.position );
+			_lookTarget.add( this._cubeDirections[ viewportIndex ] );
+			camera.up.copy( this._cubeUps[ viewportIndex ] );
+			camera.lookAt( _lookTarget );
+			camera.updateMatrixWorld();
+
+			shadowMatrix.makeTranslation( - _lightPositionWorld.x, - _lightPositionWorld.y, - _lightPositionWorld.z );
+
+			_projScreenMatrix.multiplyMatrices( camera.projectionMatrix, camera.matrixWorldInverse );
+			this._frustum.setFromProjectionMatrix( _projScreenMatrix, camera.coordinateSystem, camera.reversedDepth );
+
+		}
+
+	}
+
+	/**
+	 * A light that gets emitted from a single point in all directions. A common
+	 * use case for this is to replicate the light emitted from a bare
+	 * lightbulb.
+	 *
+	 * This light can cast shadows - see the {@link PointLightShadow} for details.
+	 *
+	 * ```js
+	 * const light = new THREE.PointLight( 0xff0000, 1, 100 );
+	 * light.position.set( 50, 50, 50 );
+	 * scene.add( light );
+	 * ```
+	 *
+	 * @augments Light
+	 */
+	class PointLight extends Light {
+
+		/**
+		 * Constructs a new point light.
+		 *
+		 * @param {(number|Color|string)} [color=0xffffff] - The light's color.
+		 * @param {number} [intensity=1] - The light's strength/intensity measured in candela (cd).
+		 * @param {number} [distance=0] - Maximum range of the light. `0` means no limit.
+		 * @param {number} [decay=2] - The amount the light dims along the distance of the light.
+		 */
+		constructor( color, intensity, distance = 0, decay = 2 ) {
+
+			super( color, intensity );
+
+			/**
+			 * This flag can be used for type testing.
+			 *
+			 * @type {boolean}
+			 * @readonly
+			 * @default true
+			 */
+			this.isPointLight = true;
+
+			this.type = 'PointLight';
+
+			/**
+			 * When distance is zero, light will attenuate according to inverse-square
+			 * law to infinite distance. When distance is non-zero, light will attenuate
+			 * according to inverse-square law until near the distance cutoff, where it
+			 * will then attenuate quickly and smoothly to 0. Inherently, cutoffs are not
+			 * physically correct.
+			 *
+			 * @type {number}
+			 * @default 0
+			 */
+			this.distance = distance;
+
+			/**
+			 * The amount the light dims along the distance of the light. In context of
+			 * physically-correct rendering the default value should not be changed.
+			 *
+			 * @type {number}
+			 * @default 2
+			 */
+			this.decay = decay;
+
+			/**
+			 * This property holds the light's shadow configuration.
+			 *
+			 * @type {PointLightShadow}
+			 */
+			this.shadow = new PointLightShadow();
+
+		}
+
+		/**
+		 * The light's power. Power is the luminous power of the light measured in lumens (lm).
+		 * Changing the power will also change the light's intensity.
+		 *
+		 * @type {number}
+		 */
+		get power() {
+
+			// compute the light's luminous power (in lumens) from its intensity (in candela)
+			// for an isotropic light source, luminous power (lm) = 4 π luminous intensity (cd)
+			return this.intensity * 4 * Math.PI;
+
+		}
+
+		set power( power ) {
+
+			// set the light's intensity (in candela) from the desired luminous power (in lumens)
+			this.intensity = power / ( 4 * Math.PI );
+
+		}
+
+		dispose() {
+
+			this.shadow.dispose();
+
+		}
+
+		copy( source, recursive ) {
+
+			super.copy( source, recursive );
+
+			this.distance = source.distance;
+			this.decay = source.decay;
+
+			this.shadow = source.shadow.clone();
+
+			return this;
+
+		}
+
+	}
+
+	//Note: Point Lights use accurate units, where 1 = 1 meter.  Updated from r155 on
+
+	const AMBIENT = 0,
+	    POINT = 1,
+	    SPOT = 2,
+	    DIRECTIONAL = 3;
+
+	function AddLight(type = AMBIENT, color = "white", brightness = 100) {
+	    var l;
+	    console.log(type, color, brightness);
+	    switch (type) {
+	        case AMBIENT:
+	            l = new AmbientLight(color, brightness);
+	            exports.scene.add(l);
+	            break;
+	        case POINT:
+	            l = new PointLight(color, brightness);
+	            exports.scene.add(l);
+	            break;
+	        default:
+	            console.error("KA3D: Light is not a valid type");
+	    }
+	    return l;
+	}
+
+	exports.AMBIENT = AMBIENT;
+	exports.AddLight = AddLight;
 	exports.BASIC = BASIC;
 	exports.Box = Box$1;
+	exports.DIRECTIONAL = DIRECTIONAL;
 	exports.EnablePhysics = EnablePhysics;
 	exports.Init = Init;
 	exports.NORMAL = NORMAL;
 	exports.PHONG = PHONG;
 	exports.PHYSICAL = PHYSICAL;
+	exports.POINT = POINT;
 	exports.Render = Render;
+	exports.SPOT = SPOT;
+	exports.SetMaterial = SetMaterial;
 	exports.TOON = TOON;
 	exports.Vec3 = Vec3;
 	exports.physMeshes = physMeshes;
-	exports.setMaterial = setMaterial;
 	exports.threeMeshes = threeMeshes;
 
 	return exports;

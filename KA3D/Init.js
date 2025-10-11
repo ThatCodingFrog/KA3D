@@ -41,4 +41,4 @@ function EnablePhysics(gravityVector = new Vec3(0, -9.81, 0)) {
     world.gravity = gravityVector;
 }
 
-export { Init, scene, camera, renderer, world, material, EnablePhysics, Vec3 }
+export { Init, scene, camera, renderer, world, material, EnablePhysics }
