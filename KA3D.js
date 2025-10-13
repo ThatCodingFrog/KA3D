@@ -53153,6 +53153,120 @@ void main() {
 	new Vec3();
 	new Vec3();
 	new Vec3();
+
+	/**
+	 * Cylinder class.
+	 * @example
+	 *     const radiusTop = 0.5
+	 *     const radiusBottom = 0.5
+	 *     const height = 2
+	 *     const numSegments = 12
+	 *     const cylinderShape = new CANNON.Cylinder(radiusTop, radiusBottom, height, numSegments)
+	 *     const cylinderBody = new CANNON.Body({ mass: 1, shape: cylinderShape })
+	 *     world.addBody(cylinderBody)
+	 */
+
+	class PhysCylinder extends ConvexPolyhedron {
+	  /** The radius of the top of the Cylinder. */
+
+	  /** The radius of the bottom of the Cylinder. */
+
+	  /** The height of the Cylinder. */
+
+	  /** The number of segments to build the cylinder out of. */
+
+	  /**
+	   * @param radiusTop The radius of the top of the Cylinder.
+	   * @param radiusBottom The radius of the bottom of the Cylinder.
+	   * @param height The height of the Cylinder.
+	   * @param numSegments The number of segments to build the cylinder out of.
+	   */
+	  constructor(radiusTop, radiusBottom, height, numSegments) {
+	    if (radiusTop === void 0) {
+	      radiusTop = 1;
+	    }
+
+	    if (radiusBottom === void 0) {
+	      radiusBottom = 1;
+	    }
+
+	    if (height === void 0) {
+	      height = 1;
+	    }
+
+	    if (numSegments === void 0) {
+	      numSegments = 8;
+	    }
+
+	    if (radiusTop < 0) {
+	      throw new Error('The cylinder radiusTop cannot be negative.');
+	    }
+
+	    if (radiusBottom < 0) {
+	      throw new Error('The cylinder radiusBottom cannot be negative.');
+	    }
+
+	    const N = numSegments;
+	    const vertices = [];
+	    const axes = [];
+	    const faces = [];
+	    const bottomface = [];
+	    const topface = [];
+	    const cos = Math.cos;
+	    const sin = Math.sin; // First bottom point
+
+	    vertices.push(new Vec3(-radiusBottom * sin(0), -height * 0.5, radiusBottom * cos(0)));
+	    bottomface.push(0); // First top point
+
+	    vertices.push(new Vec3(-radiusTop * sin(0), height * 0.5, radiusTop * cos(0)));
+	    topface.push(1);
+
+	    for (let i = 0; i < N; i++) {
+	      const theta = 2 * Math.PI / N * (i + 1);
+	      const thetaN = 2 * Math.PI / N * (i + 0.5);
+
+	      if (i < N - 1) {
+	        // Bottom
+	        vertices.push(new Vec3(-radiusBottom * sin(theta), -height * 0.5, radiusBottom * cos(theta)));
+	        bottomface.push(2 * i + 2); // Top
+
+	        vertices.push(new Vec3(-radiusTop * sin(theta), height * 0.5, radiusTop * cos(theta)));
+	        topface.push(2 * i + 3); // Face
+
+	        faces.push([2 * i, 2 * i + 1, 2 * i + 3, 2 * i + 2]);
+	      } else {
+	        faces.push([2 * i, 2 * i + 1, 1, 0]); // Connect
+	      } // Axis: we can cut off half of them if we have even number of segments
+
+
+	      if (N % 2 === 1 || i < N / 2) {
+	        axes.push(new Vec3(-sin(thetaN), 0, cos(thetaN)));
+	      }
+	    }
+
+	    faces.push(bottomface);
+	    axes.push(new Vec3(0, 1, 0)); // Reorder top face
+
+	    const temp = [];
+
+	    for (let i = 0; i < topface.length; i++) {
+	      temp.push(topface[topface.length - i - 1]);
+	    }
+
+	    faces.push(temp);
+	    super({
+	      vertices,
+	      faces,
+	      axes
+	    });
+	    this.type = Shape.types.CYLINDER;
+	    this.radiusTop = radiusTop;
+	    this.radiusBottom = radiusBottom;
+	    this.height = height;
+	    this.numSegments = numSegments;
+	  }
+
+	}
 	new Vec3();
 	new Vec3();
 	new Vec3();
@@ -56239,8 +56353,8 @@ void main() {
 	  document.body.style.setProperty("overflow", "hidden");
 	  
 	  exports.scene = new Scene();
-	  exports.camera = new PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 10000);
-	  exports.camera.position.z = 500;
+	  exports.camera = new PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+	  exports.camera.position.z = 50;
 	  exports.camera.lookAt(new Vector3(0,0,0));
 	  
 	  
@@ -58171,7 +58285,19 @@ void main() {
 	    this.shape.add(mesh.shape);
 	    this.physShape.addShape(mesh._physShape, pos, rot);
 	    return this;
-	  }
+	    }
+
+	    setPosition(x = 0, y = 0, z = 0) {
+	        this.physShape.position.set(x, y, z);
+	        return this;
+	    }
+
+	    setRotation(x = 0, y = 0, z = 0) {
+	        var euler = new Euler(x, y, z, "YXZ");
+	        var quat = new Quaternion$1().setFromEuler(euler);
+	        this.physShape.quaternion.copy(quat);
+	        return this;
+	    }
 	};
 
 	/**
@@ -58880,10 +59006,353 @@ void main() {
 	    return l;
 	}
 
+	/**
+	 * A geometry class for representing a cylinder.
+	 *
+	 * ```js
+	 * const geometry = new THREE.CylinderGeometry( 5, 5, 20, 32 );
+	 * const material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+	 * const cylinder = new THREE.Mesh( geometry, material );
+	 * scene.add( cylinder );
+	 * ```
+	 *
+	 * @augments BufferGeometry
+	 */
+	class CylinderGeometry extends BufferGeometry {
+
+		/**
+		 * Constructs a new cylinder geometry.
+		 *
+		 * @param {number} [radiusTop=1] - Radius of the cylinder at the top.
+		 * @param {number} [radiusBottom=1] - Radius of the cylinder at the bottom.
+		 * @param {number} [height=1] - Height of the cylinder.
+		 * @param {number} [radialSegments=32] - Number of segmented faces around the circumference of the cylinder.
+		 * @param {number} [heightSegments=1] - Number of rows of faces along the height of the cylinder.
+		 * @param {boolean} [openEnded=false] - Whether the base of the cylinder is open or capped.
+		 * @param {number} [thetaStart=0] - Start angle for first segment, in radians.
+		 * @param {number} [thetaLength=Math.PI*2] - The central angle, often called theta, of the circular sector, in radians.
+		 * The default value results in a complete cylinder.
+		 */
+		constructor( radiusTop = 1, radiusBottom = 1, height = 1, radialSegments = 32, heightSegments = 1, openEnded = false, thetaStart = 0, thetaLength = Math.PI * 2 ) {
+
+			super();
+
+			this.type = 'CylinderGeometry';
+
+			/**
+			 * Holds the constructor parameters that have been
+			 * used to generate the geometry. Any modification
+			 * after instantiation does not change the geometry.
+			 *
+			 * @type {Object}
+			 */
+			this.parameters = {
+				radiusTop: radiusTop,
+				radiusBottom: radiusBottom,
+				height: height,
+				radialSegments: radialSegments,
+				heightSegments: heightSegments,
+				openEnded: openEnded,
+				thetaStart: thetaStart,
+				thetaLength: thetaLength
+			};
+
+			const scope = this;
+
+			radialSegments = Math.floor( radialSegments );
+			heightSegments = Math.floor( heightSegments );
+
+			// buffers
+
+			const indices = [];
+			const vertices = [];
+			const normals = [];
+			const uvs = [];
+
+			// helper variables
+
+			let index = 0;
+			const indexArray = [];
+			const halfHeight = height / 2;
+			let groupStart = 0;
+
+			// generate geometry
+
+			generateTorso();
+
+			if ( openEnded === false ) {
+
+				if ( radiusTop > 0 ) generateCap( true );
+				if ( radiusBottom > 0 ) generateCap( false );
+
+			}
+
+			// build geometry
+
+			this.setIndex( indices );
+			this.setAttribute( 'position', new Float32BufferAttribute( vertices, 3 ) );
+			this.setAttribute( 'normal', new Float32BufferAttribute( normals, 3 ) );
+			this.setAttribute( 'uv', new Float32BufferAttribute( uvs, 2 ) );
+
+			function generateTorso() {
+
+				const normal = new Vector3();
+				const vertex = new Vector3();
+
+				let groupCount = 0;
+
+				// this will be used to calculate the normal
+				const slope = ( radiusBottom - radiusTop ) / height;
+
+				// generate vertices, normals and uvs
+
+				for ( let y = 0; y <= heightSegments; y ++ ) {
+
+					const indexRow = [];
+
+					const v = y / heightSegments;
+
+					// calculate the radius of the current row
+
+					const radius = v * ( radiusBottom - radiusTop ) + radiusTop;
+
+					for ( let x = 0; x <= radialSegments; x ++ ) {
+
+						const u = x / radialSegments;
+
+						const theta = u * thetaLength + thetaStart;
+
+						const sinTheta = Math.sin( theta );
+						const cosTheta = Math.cos( theta );
+
+						// vertex
+
+						vertex.x = radius * sinTheta;
+						vertex.y = - v * height + halfHeight;
+						vertex.z = radius * cosTheta;
+						vertices.push( vertex.x, vertex.y, vertex.z );
+
+						// normal
+
+						normal.set( sinTheta, slope, cosTheta ).normalize();
+						normals.push( normal.x, normal.y, normal.z );
+
+						// uv
+
+						uvs.push( u, 1 - v );
+
+						// save index of vertex in respective row
+
+						indexRow.push( index ++ );
+
+					}
+
+					// now save vertices of the row in our index array
+
+					indexArray.push( indexRow );
+
+				}
+
+				// generate indices
+
+				for ( let x = 0; x < radialSegments; x ++ ) {
+
+					for ( let y = 0; y < heightSegments; y ++ ) {
+
+						// we use the index array to access the correct indices
+
+						const a = indexArray[ y ][ x ];
+						const b = indexArray[ y + 1 ][ x ];
+						const c = indexArray[ y + 1 ][ x + 1 ];
+						const d = indexArray[ y ][ x + 1 ];
+
+						// faces
+
+						if ( radiusTop > 0 || y !== 0 ) {
+
+							indices.push( a, b, d );
+							groupCount += 3;
+
+						}
+
+						if ( radiusBottom > 0 || y !== heightSegments - 1 ) {
+
+							indices.push( b, c, d );
+							groupCount += 3;
+
+						}
+
+					}
+
+				}
+
+				// add a group to the geometry. this will ensure multi material support
+
+				scope.addGroup( groupStart, groupCount, 0 );
+
+				// calculate new start value for groups
+
+				groupStart += groupCount;
+
+			}
+
+			function generateCap( top ) {
+
+				// save the index of the first center vertex
+				const centerIndexStart = index;
+
+				const uv = new Vector2();
+				const vertex = new Vector3();
+
+				let groupCount = 0;
+
+				const radius = ( top === true ) ? radiusTop : radiusBottom;
+				const sign = ( top === true ) ? 1 : -1;
+
+				// first we generate the center vertex data of the cap.
+				// because the geometry needs one set of uvs per face,
+				// we must generate a center vertex per face/segment
+
+				for ( let x = 1; x <= radialSegments; x ++ ) {
+
+					// vertex
+
+					vertices.push( 0, halfHeight * sign, 0 );
+
+					// normal
+
+					normals.push( 0, sign, 0 );
+
+					// uv
+
+					uvs.push( 0.5, 0.5 );
+
+					// increase index
+
+					index ++;
+
+				}
+
+				// save the index of the last center vertex
+				const centerIndexEnd = index;
+
+				// now we generate the surrounding vertices, normals and uvs
+
+				for ( let x = 0; x <= radialSegments; x ++ ) {
+
+					const u = x / radialSegments;
+					const theta = u * thetaLength + thetaStart;
+
+					const cosTheta = Math.cos( theta );
+					const sinTheta = Math.sin( theta );
+
+					// vertex
+
+					vertex.x = radius * sinTheta;
+					vertex.y = halfHeight * sign;
+					vertex.z = radius * cosTheta;
+					vertices.push( vertex.x, vertex.y, vertex.z );
+
+					// normal
+
+					normals.push( 0, sign, 0 );
+
+					// uv
+
+					uv.x = ( cosTheta * 0.5 ) + 0.5;
+					uv.y = ( sinTheta * 0.5 * sign ) + 0.5;
+					uvs.push( uv.x, uv.y );
+
+					// increase index
+
+					index ++;
+
+				}
+
+				// generate indices
+
+				for ( let x = 0; x < radialSegments; x ++ ) {
+
+					const c = centerIndexStart + x;
+					const i = centerIndexEnd + x;
+
+					if ( top === true ) {
+
+						// face top
+
+						indices.push( i, i + 1, c );
+
+					} else {
+
+						// face bottom
+
+						indices.push( i + 1, i, c );
+
+					}
+
+					groupCount += 3;
+
+				}
+
+				// add a group to the geometry. this will ensure multi material support
+
+				scope.addGroup( groupStart, groupCount, top === true ? 1 : 2 );
+
+				// calculate new start value for groups
+
+				groupStart += groupCount;
+
+			}
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.parameters = Object.assign( {}, source.parameters );
+
+			return this;
+
+		}
+
+		/**
+		 * Factory method for creating an instance of this class from the given
+		 * JSON object.
+		 *
+		 * @param {Object} data - A JSON object representing the serialized geometry.
+		 * @return {CylinderGeometry} A new instance.
+		 */
+		static fromJSON( data ) {
+
+			return new CylinderGeometry( data.radiusTop, data.radiusBottom, data.height, data.radialSegments, data.heightSegments, data.openEnded, data.thetaStart, data.thetaLength );
+
+		}
+
+	}
+
+	class Cylinder {
+	    constructor(radiusTop = 1, radiusBottom = 1, height = 2, segments = 8, mass = 1) {
+	        this.shape = new Mesh(new CylinderGeometry(radiusTop, radiusBottom, height, segments), exports.material);
+	        exports.scene.add(this.shape);
+
+	        threeMeshes.push(this.shape);
+
+	        this._physShape = new PhysCylinder(radiusTop, radiusBottom, height, segments);
+	        this.physShape = new Body({ mass: mass });
+
+	        this.physShape.addShape(this._physShape);
+	        exports.world.addBody(this.physShape);
+
+	        physMeshes.push(this.physShape);
+	    }
+	}
+
 	exports.AMBIENT = AMBIENT;
 	exports.AddLight = AddLight;
 	exports.BASIC = BASIC;
 	exports.Box = Box$1;
+	exports.Cylinder = Cylinder;
 	exports.DIRECTIONAL = DIRECTIONAL;
 	exports.EnablePhysics = EnablePhysics;
 	exports.Init = Init;
