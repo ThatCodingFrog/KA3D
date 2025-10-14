@@ -292,7 +292,7 @@ var KA3D = (function (exports) {
 	 * vector.applyQuaternion( quaternion );
 	 * ```
 	 */
-	let Quaternion$1 = class Quaternion {
+	let Quaternion$2 = class Quaternion {
 
 		/**
 		 * Constructs a new quaternion.
@@ -2472,7 +2472,7 @@ var KA3D = (function (exports) {
 	}
 
 	const _vector$5 = /*@__PURE__*/ new Vector3();
-	const _quaternion$2 = /*@__PURE__*/ new Quaternion$1();
+	const _quaternion$2 = /*@__PURE__*/ new Quaternion$2();
 
 	const REVISION = '181dev';
 
@@ -5154,7 +5154,7 @@ var KA3D = (function (exports) {
 	}
 
 	const _matrix = /*@__PURE__*/ new Matrix4();
-	const _quaternion$1 = /*@__PURE__*/ new Quaternion$1();
+	const _quaternion$1 = /*@__PURE__*/ new Quaternion$2();
 
 	/**
 	 * A class representing Euler angles.
@@ -5172,7 +5172,7 @@ var KA3D = (function (exports) {
 	 * b.applyEuler(a);
 	 * ```
 	 */
-	class Euler {
+	let Euler$1 = class Euler {
 
 		/**
 		 * Constructs a new euler instance.
@@ -5585,7 +5585,7 @@ var KA3D = (function (exports) {
 
 		}
 
-	}
+	};
 
 	/**
 	 * The default Euler angle order.
@@ -5594,7 +5594,7 @@ var KA3D = (function (exports) {
 	 * @type {string}
 	 * @default 'XYZ'
 	 */
-	Euler.DEFAULT_ORDER = 'XYZ';
+	Euler$1.DEFAULT_ORDER = 'XYZ';
 
 	/**
 	 * A layers object assigns an 3D object to 1 or more of 32
@@ -6330,13 +6330,13 @@ var KA3D = (function (exports) {
 	let _object3DId = 0;
 
 	const _v1$3 = /*@__PURE__*/ new Vector3();
-	const _q1 = /*@__PURE__*/ new Quaternion$1();
+	const _q1 = /*@__PURE__*/ new Quaternion$2();
 	const _m1$3 = /*@__PURE__*/ new Matrix4();
 	const _target = /*@__PURE__*/ new Vector3();
 
 	const _position = /*@__PURE__*/ new Vector3();
 	const _scale = /*@__PURE__*/ new Vector3();
-	const _quaternion = /*@__PURE__*/ new Quaternion$1();
+	const _quaternion = /*@__PURE__*/ new Quaternion$2();
 
 	const _xAxis = /*@__PURE__*/ new Vector3( 1, 0, 0 );
 	const _yAxis = /*@__PURE__*/ new Vector3( 0, 1, 0 );
@@ -6457,8 +6457,8 @@ var KA3D = (function (exports) {
 			this.up = Object3D.DEFAULT_UP.clone();
 
 			const position = new Vector3();
-			const rotation = new Euler();
-			const quaternion = new Quaternion$1();
+			const rotation = new Euler$1();
+			const quaternion = new Quaternion$2();
 			const scale = new Vector3( 1, 1, 1 );
 
 			function onRotationChange() {
@@ -8017,7 +8017,7 @@ var KA3D = (function (exports) {
 			 * @type {Euler}
 			 * @default (0,0,0)
 			 */
-			this.backgroundRotation = new Euler();
+			this.backgroundRotation = new Euler$1();
 
 			/**
 			 * Attenuates the color of the environment. Only influences environment maps
@@ -8035,7 +8035,7 @@ var KA3D = (function (exports) {
 			 * @type {Euler}
 			 * @default (0,0,0)
 			 */
-			this.environmentRotation = new Euler();
+			this.environmentRotation = new Euler$1();
 
 			/**
 			 * Forces everything in the scene to be rendered with the defined material. It is possible
@@ -10942,7 +10942,7 @@ var KA3D = (function (exports) {
 	 * An analytical 3D sphere defined by a center and radius. This class is mainly
 	 * used as a Bounding Sphere for 3D objects.
 	 */
-	class Sphere {
+	let Sphere$1 = class Sphere {
 
 		/**
 		 * Constructs a new sphere.
@@ -11348,7 +11348,7 @@ var KA3D = (function (exports) {
 
 		}
 
-	}
+	};
 
 	const _vector1 = /*@__PURE__*/ new Vector3();
 	const _vector2$1 = /*@__PURE__*/ new Vector3();
@@ -11713,7 +11713,7 @@ var KA3D = (function (exports) {
 
 	}
 
-	const _sphere$1 = /*@__PURE__*/ new Sphere();
+	const _sphere$1 = /*@__PURE__*/ new Sphere$1();
 	const _defaultSpriteCenter = /*@__PURE__*/ new Vector2( 0.5, 0.5 );
 	const _vector$3 = /*@__PURE__*/ new Vector3();
 
@@ -14760,7 +14760,7 @@ var KA3D = (function (exports) {
 
 			if ( this.boundingSphere === null ) {
 
-				this.boundingSphere = new Sphere();
+				this.boundingSphere = new Sphere$1();
 
 			}
 
@@ -18686,7 +18686,7 @@ void main() {
 			 * @type {Euler}
 			 * @default (0,0,0)
 			 */
-			this.envMapRotation = new Euler();
+			this.envMapRotation = new Euler$1();
 
 			/**
 			 * How to combine the result of the surface's color with the environment map, if any.
@@ -18808,7 +18808,7 @@ void main() {
 
 	const _inverseMatrix = /*@__PURE__*/ new Matrix4();
 	const _ray = /*@__PURE__*/ new Ray$1();
-	const _sphere = /*@__PURE__*/ new Sphere();
+	const _sphere = /*@__PURE__*/ new Sphere$1();
 	const _sphereHitAt = /*@__PURE__*/ new Vector3();
 
 	const _vA = /*@__PURE__*/ new Vector3();
@@ -26516,7 +26516,7 @@ void main() {
 	};
 
 	const _rgb = { r: 0, b: 0, g: 0 };
-	const _e1$1 = /*@__PURE__*/ new Euler();
+	const _e1$1 = /*@__PURE__*/ new Euler$1();
 	const _m1$1 = /*@__PURE__*/ new Matrix4();
 
 	function WebGLBackground( renderer, cubemaps, cubeuvmaps, state, objects, alpha, premultipliedAlpha ) {
@@ -43295,7 +43295,7 @@ void main() {
 
 	}
 
-	const _e1 = /*@__PURE__*/ new Euler();
+	const _e1 = /*@__PURE__*/ new Euler$1();
 	const _m1 = /*@__PURE__*/ new Matrix4();
 
 	function WebGLMaterials( renderer, properties ) {
@@ -49028,7 +49028,7 @@ void main() {
 	 * @see http://en.wikipedia.org/wiki/Quaternion
 	 */
 
-	class Quaternion {
+	let Quaternion$1 = class Quaternion {
 	  constructor(x, y, z, w) {
 	    if (x === void 0) {
 	      x = 0;
@@ -49499,7 +49499,7 @@ void main() {
 	    return target;
 	  }
 
-	}
+	};
 	const sfv_t1 = new Vec3();
 	const sfv_t2 = new Vec3();
 
@@ -49648,7 +49648,7 @@ void main() {
 	    }
 
 	    this.position = new Vec3();
-	    this.quaternion = new Quaternion();
+	    this.quaternion = new Quaternion$1();
 
 	    if (options.position) {
 	      this.position.copy(options.position);
@@ -49746,7 +49746,7 @@ void main() {
 	  }
 
 	}
-	const tmpQuat$1 = new Quaternion();
+	const tmpQuat$1 = new Quaternion$1();
 
 	/**
 	 * A set of polygons describing a convex shape.
@@ -50963,10 +50963,10 @@ void main() {
 	    this.timeLastSleepy = 0;
 	    this.wakeUpAfterNarrowphase = false;
 	    this.torque = new Vec3();
-	    this.quaternion = new Quaternion();
-	    this.initQuaternion = new Quaternion();
-	    this.previousQuaternion = new Quaternion();
-	    this.interpolatedQuaternion = new Quaternion();
+	    this.quaternion = new Quaternion$1();
+	    this.initQuaternion = new Quaternion$1();
+	    this.previousQuaternion = new Quaternion$1();
+	    this.interpolatedQuaternion = new Quaternion$1();
 
 	    if (options.quaternion) {
 	      this.quaternion.copy(options.quaternion);
@@ -51146,7 +51146,7 @@ void main() {
 
 	  addShape(shape, _offset, _orientation) {
 	    const offset = new Vec3();
-	    const orientation = new Quaternion();
+	    const orientation = new Quaternion$1();
 
 	    if (_offset) {
 	      offset.copy(_offset);
@@ -51510,7 +51510,7 @@ void main() {
 	  type: 'sleep'
 	};
 	const tmpVec = new Vec3();
-	const tmpQuat = new Quaternion();
+	const tmpQuat = new Quaternion$1();
 	const updateAABB_shapeAABB = new AABB();
 	const uiw_m1 = new Mat3();
 	const uiw_m2 = new Mat3();
@@ -51693,7 +51693,7 @@ void main() {
 
 	const Broadphase_collisionPairs_r = new Vec3();
 	new Vec3();
-	new Quaternion();
+	new Quaternion$1();
 	new Vec3();
 	const Broadphase_makePairsUnique_temp = {
 	  keys: []
@@ -52526,7 +52526,7 @@ void main() {
 	const v1 = new Vec3();
 	const v2 = new Vec3();
 	const intersectBody_xi = new Vec3();
-	const intersectBody_qi = new Quaternion();
+	const intersectBody_qi = new Quaternion$1();
 	const intersectPoint = new Vec3();
 	const a = new Vec3();
 	const b = new Vec3();
@@ -53142,6 +53142,73 @@ void main() {
 	new Vec3();
 	new Vec3();
 	new Vec3(); // bilateral constraint between two dynamic objects
+
+	/**
+	 * Spherical shape
+	 * @example
+	 *     const radius = 1
+	 *     const sphereShape = new CANNON.Sphere(radius)
+	 *     const sphereBody = new CANNON.Body({ mass: 1, shape: sphereShape })
+	 *     world.addBody(sphereBody)
+	 */
+	class PhysSphere extends Shape {
+	  /**
+	   * The radius of the sphere.
+	   */
+
+	  /**
+	   *
+	   * @param radius The radius of the sphere, a non-negative number.
+	   */
+	  constructor(radius) {
+	    super({
+	      type: Shape.types.SPHERE
+	    });
+	    this.radius = radius !== undefined ? radius : 1.0;
+
+	    if (this.radius < 0) {
+	      throw new Error('The sphere radius cannot be negative.');
+	    }
+
+	    this.updateBoundingSphereRadius();
+	  }
+	  /** calculateLocalInertia */
+
+
+	  calculateLocalInertia(mass, target) {
+	    if (target === void 0) {
+	      target = new Vec3();
+	    }
+
+	    const I = 2.0 * mass * this.radius * this.radius / 5.0;
+	    target.x = I;
+	    target.y = I;
+	    target.z = I;
+	    return target;
+	  }
+	  /** volume */
+
+
+	  volume() {
+	    return 4.0 * Math.PI * Math.pow(this.radius, 3) / 3.0;
+	  }
+
+	  updateBoundingSphereRadius() {
+	    this.boundingSphereRadius = this.radius;
+	  }
+
+	  calculateWorldAABB(pos, quat, min, max) {
+	    const r = this.radius;
+	    const axes = ['x', 'y', 'z'];
+
+	    for (let i = 0; i < axes.length; i++) {
+	      const ax = axes[i];
+	      min[ax] = pos[ax] - r;
+	      max[ax] = pos[ax] + r;
+	    }
+	  }
+
+	}
 	new Vec3();
 	new Vec3();
 	new Vec3(); // Temp vectors for calculation
@@ -55121,8 +55188,8 @@ void main() {
 	const averageContactPointB = new Vec3();
 	const tmpVec1 = new Vec3();
 	const tmpVec2 = new Vec3();
-	const tmpQuat1 = new Quaternion();
-	const tmpQuat2 = new Quaternion();
+	const tmpQuat1 = new Quaternion$1();
+	const tmpQuat2 = new Quaternion$1();
 
 	const planeTrimesh_normal = new Vec3();
 	const planeTrimesh_relpos = new Vec3();
@@ -55216,7 +55283,7 @@ void main() {
 	const particlePlane_projected = new Vec3();
 	const particleSphere_normal = new Vec3(); // WIP
 
-	const cqj = new Quaternion();
+	const cqj = new Quaternion$1();
 	const convexParticle_local = new Vec3();
 	new Vec3();
 	const convexParticle_penetratedFaceNormal = new Vec3();
@@ -56823,7 +56890,7 @@ void main() {
 			 * @type {Euler}
 			 * @default (0,0,0)
 			 */
-			this.envMapRotation = new Euler();
+			this.envMapRotation = new Euler$1();
 
 			/**
 			 * How to combine the result of the surface's color with the environment map, if any.
@@ -57261,7 +57328,7 @@ void main() {
 			 * @type {Euler}
 			 * @default (0,0,0)
 			 */
-			this.envMapRotation = new Euler();
+			this.envMapRotation = new Euler$1();
 
 			/**
 			 * Scales the effect of the environment map by multiplying its color.
@@ -58261,8 +58328,8 @@ void main() {
 	}
 
 	let Box$1 = class Box {
-	  constructor(w = 100, h = 100, d = 100, mass = 1) {
-	    this.shape = new Mesh(new BoxGeometry(w, h, d), exports.material);
+	    constructor(w = 100, h = 100, d = 100, mass = 1) {
+	        this.shape = new Mesh(new BoxGeometry(w, h, d), exports.material);
 	    exports.scene.add(this.shape);
 
 	    threeMeshes.push(this.shape);
@@ -58293,8 +58360,8 @@ void main() {
 	    }
 
 	    setRotation(x = 0, y = 0, z = 0) {
-	        var euler = new Euler(x, y, z, "YXZ");
-	        var quat = new Quaternion$1().setFromEuler(euler);
+	        var euler = new Euler$1(x, y, z, "YXZ");
+	        var quat = new Quaternion$2().setFromEuler(euler);
 	        this.physShape.quaternion.copy(quat);
 	        return this;
 	    }
@@ -59346,6 +59413,237 @@ void main() {
 
 	        physMeshes.push(this.physShape);
 	    }
+
+	    add(mesh) {
+	        const pos = mesh.physShape.position;
+	        const rot = mesh.physShape.quaternion;
+
+	        exports.world.removeBody(mesh.physShape);
+	        this.shape.add(mesh.shape);
+	        this.physShape.addShape(mesh._physShape, pos, rot);
+	        return this;
+	    }
+
+	    setPosition(x = 0, y = 0, z = 0) {
+	        this.physShape.position.set(x, y, z);
+	        return this;
+	    }
+
+	    setRotation(x = 0, y = 0, z = 0) {
+	        var euler = new Euler(x, y, z, "YXZ");
+	        var quat = new Quaternion().setFromEuler(euler);
+	        this.physShape.quaternion.copy(quat);
+	        return this;
+	    }
+	}
+
+	/**
+	 * A class for generating a sphere geometry.
+	 *
+	 * ```js
+	 * const geometry = new THREE.SphereGeometry( 15, 32, 16 );
+	 * const material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+	 * const sphere = new THREE.Mesh( geometry, material );
+	 * scene.add( sphere );
+	 * ```
+	 *
+	 * @augments BufferGeometry
+	 */
+	class SphereGeometry extends BufferGeometry {
+
+		/**
+		 * Constructs a new sphere geometry.
+		 *
+		 * @param {number} [radius=1] - The sphere radius.
+		 * @param {number} [widthSegments=32] - The number of horizontal segments. Minimum value is `3`.
+		 * @param {number} [heightSegments=16] - The number of vertical segments. Minimum value is `2`.
+		 * @param {number} [phiStart=0] - The horizontal starting angle in radians.
+		 * @param {number} [phiLength=Math.PI*2] - The horizontal sweep angle size.
+		 * @param {number} [thetaStart=0] - The vertical starting angle in radians.
+		 * @param {number} [thetaLength=Math.PI] - The vertical sweep angle size.
+		 */
+		constructor( radius = 1, widthSegments = 32, heightSegments = 16, phiStart = 0, phiLength = Math.PI * 2, thetaStart = 0, thetaLength = Math.PI ) {
+
+			super();
+
+			this.type = 'SphereGeometry';
+
+			/**
+			 * Holds the constructor parameters that have been
+			 * used to generate the geometry. Any modification
+			 * after instantiation does not change the geometry.
+			 *
+			 * @type {Object}
+			 */
+			this.parameters = {
+				radius: radius,
+				widthSegments: widthSegments,
+				heightSegments: heightSegments,
+				phiStart: phiStart,
+				phiLength: phiLength,
+				thetaStart: thetaStart,
+				thetaLength: thetaLength
+			};
+
+			widthSegments = Math.max( 3, Math.floor( widthSegments ) );
+			heightSegments = Math.max( 2, Math.floor( heightSegments ) );
+
+			const thetaEnd = Math.min( thetaStart + thetaLength, Math.PI );
+
+			let index = 0;
+			const grid = [];
+
+			const vertex = new Vector3();
+			const normal = new Vector3();
+
+			// buffers
+
+			const indices = [];
+			const vertices = [];
+			const normals = [];
+			const uvs = [];
+
+			// generate vertices, normals and uvs
+
+			for ( let iy = 0; iy <= heightSegments; iy ++ ) {
+
+				const verticesRow = [];
+
+				const v = iy / heightSegments;
+
+				// special case for the poles
+
+				let uOffset = 0;
+
+				if ( iy === 0 && thetaStart === 0 ) {
+
+					uOffset = 0.5 / widthSegments;
+
+				} else if ( iy === heightSegments && thetaEnd === Math.PI ) {
+
+					uOffset = -0.5 / widthSegments;
+
+				}
+
+				for ( let ix = 0; ix <= widthSegments; ix ++ ) {
+
+					const u = ix / widthSegments;
+
+					// vertex
+
+					vertex.x = - radius * Math.cos( phiStart + u * phiLength ) * Math.sin( thetaStart + v * thetaLength );
+					vertex.y = radius * Math.cos( thetaStart + v * thetaLength );
+					vertex.z = radius * Math.sin( phiStart + u * phiLength ) * Math.sin( thetaStart + v * thetaLength );
+
+					vertices.push( vertex.x, vertex.y, vertex.z );
+
+					// normal
+
+					normal.copy( vertex ).normalize();
+					normals.push( normal.x, normal.y, normal.z );
+
+					// uv
+
+					uvs.push( u + uOffset, 1 - v );
+
+					verticesRow.push( index ++ );
+
+				}
+
+				grid.push( verticesRow );
+
+			}
+
+			// indices
+
+			for ( let iy = 0; iy < heightSegments; iy ++ ) {
+
+				for ( let ix = 0; ix < widthSegments; ix ++ ) {
+
+					const a = grid[ iy ][ ix + 1 ];
+					const b = grid[ iy ][ ix ];
+					const c = grid[ iy + 1 ][ ix ];
+					const d = grid[ iy + 1 ][ ix + 1 ];
+
+					if ( iy !== 0 || thetaStart > 0 ) indices.push( a, b, d );
+					if ( iy !== heightSegments - 1 || thetaEnd < Math.PI ) indices.push( b, c, d );
+
+				}
+
+			}
+
+			// build geometry
+
+			this.setIndex( indices );
+			this.setAttribute( 'position', new Float32BufferAttribute( vertices, 3 ) );
+			this.setAttribute( 'normal', new Float32BufferAttribute( normals, 3 ) );
+			this.setAttribute( 'uv', new Float32BufferAttribute( uvs, 2 ) );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.parameters = Object.assign( {}, source.parameters );
+
+			return this;
+
+		}
+
+		/**
+		 * Factory method for creating an instance of this class from the given
+		 * JSON object.
+		 *
+		 * @param {Object} data - A JSON object representing the serialized geometry.
+		 * @return {SphereGeometry} A new instance.
+		 */
+		static fromJSON( data ) {
+
+			return new SphereGeometry( data.radius, data.widthSegments, data.heightSegments, data.phiStart, data.phiLength, data.thetaStart, data.thetaLength );
+
+		}
+
+	}
+
+	class Sphere {
+	    constructor(radius = 1, mass = 1) {
+	        this.shape = new Mesh(new SphereGeometry(radius), exports.material);
+	        exports.scene.add(this.shape);
+
+	        threeMeshes.push(this.shape);
+
+	        this._physShape = new PhysSphere(radius);
+	        this.physShape = new Body({ mass: mass });
+
+	        this.physShape.addShape(this._physShape);
+	        exports.world.addBody(this.physShape);
+
+	        physMeshes.push(this.physShape);
+	    }
+
+
+	    add(mesh) {
+	        const pos = mesh.physShape.position;
+	        const rot = mesh.physShape.quaternion;
+
+	        exports.world.removeBody(mesh.physShape);
+	        this.shape.add(mesh.shape);
+	        this.physShape.addShape(mesh._physShape, pos, rot);
+	        return this;
+	    }
+
+	    setPosition(x = 0, y = 0, z = 0) {
+	        this.physShape.position.set(x, y, z);
+	        return this;
+	    }
+
+	    setRotation(x = 0, y = 0, z = 0) {
+	        var euler = new Euler$1(x, y, z, "YXZ");
+	        var quat = new Quaternion$2().setFromEuler(euler);
+	        this.physShape.quaternion.copy(quat);
+	        return this;
+	    }
 	}
 
 	exports.AMBIENT = AMBIENT;
@@ -59363,6 +59661,7 @@ void main() {
 	exports.Render = Render;
 	exports.SPOT = SPOT;
 	exports.SetMaterial = SetMaterial;
+	exports.Sphere = Sphere;
 	exports.TOON = TOON;
 	exports.Vec3 = Vec3;
 	exports.physMeshes = physMeshes;

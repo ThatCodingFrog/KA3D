@@ -7790,7 +7790,7 @@ function resolveSingleBilateral(body1, pos1, body2, pos2, normal) {
  *     const sphereBody = new CANNON.Body({ mass: 1, shape: sphereShape })
  *     world.addBody(sphereBody)
  */
-class Sphere extends Shape {
+class PhysSphere extends Shape {
   /**
    * The radius of the sphere.
    */
@@ -8424,7 +8424,7 @@ class Particle extends Shape {
  *     planeBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0) // make it face up
  *     world.addBody(planeBody)
  */
-class Plane extends Shape {
+class PhysPlane extends Shape {
   /** worldNormal */
 
   /** worldNormalNeedsUpdate */
@@ -13020,4 +13020,4 @@ const endShapeContactEvent = {
   shapeB: null
 };
 
-export { AABB, ArrayCollisionMatrix, BODY_SLEEP_STATES, BODY_TYPES, Body, PhysBox, Broadphase, COLLISION_TYPES, ConeTwistConstraint, Constraint, ContactEquation, ContactMaterial, ConvexPolyhedron, PhysCylinder, DistanceConstraint, Equation, EventTarget, FrictionEquation, GSSolver, GridBroadphase, Heightfield, HingeConstraint, JacobianElement, LockConstraint, Mat3, Material, NaiveBroadphase, Narrowphase, ObjectCollisionMatrix, Particle, Plane, PointToPointConstraint, Pool, Quaternion, RAY_MODES, Ray, RaycastResult, RaycastVehicle, RigidVehicle, RotationalEquation, RotationalMotorEquation, SAPBroadphase, SHAPE_TYPES, SPHSystem, Shape, Solver, Sphere, SplitSolver, Spring, Transform, Trimesh, Vec3, Vec3Pool, WheelInfo, World };
+export { AABB, ArrayCollisionMatrix, BODY_SLEEP_STATES, BODY_TYPES, Body, PhysBox, Broadphase, COLLISION_TYPES, ConeTwistConstraint, Constraint, ContactEquation, ContactMaterial, ConvexPolyhedron, PhysCylinder, DistanceConstraint, Equation, EventTarget, FrictionEquation, GSSolver, GridBroadphase, Heightfield, HingeConstraint, JacobianElement, LockConstraint, Mat3, Material, NaiveBroadphase, Narrowphase, ObjectCollisionMatrix, Particle, PhysPlane, PointToPointConstraint, Pool, Quaternion, RAY_MODES, Ray, RaycastResult, RaycastVehicle, RigidVehicle, RotationalEquation, RotationalMotorEquation, SAPBroadphase, SHAPE_TYPES, SPHSystem, Shape, Solver, PhysSphere, SplitSolver, Spring, Transform, Trimesh, Vec3, Vec3Pool, WheelInfo, World };
