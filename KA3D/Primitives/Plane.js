@@ -10,7 +10,7 @@ import { Quaternion } from "../../src/three/src/math/Quaternion.js";
 
 class Plane {
     constructor(w = 100, h = 100, mass = 1, infinite = false) {
-        if (infinite) {
+        /*if (infinite) {
             this.shape = new Mesh(new PlaneGeometry(camera.far, camera.far), material);
             this.shape.position.x = camera.position.x;
             this.shape.position.y = camera.position.z;
@@ -28,7 +28,7 @@ class Plane {
 
             physMeshes.push(this.physShape);
         }
-        else {
+        else {*/
             this.shape = new Mesh(new PlaneGeometry(w, h), material);
             scene.add(this.shape);
 
@@ -43,7 +43,7 @@ class Plane {
             this.setRotation(Math.PI / 2, 0, 0);
 
             physMeshes.push(this.physShape);
-        }
+        //}
     }
 
     add(mesh) {
