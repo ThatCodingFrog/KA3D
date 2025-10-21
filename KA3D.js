@@ -58409,17 +58409,17 @@ void main() {
 	let Box$1 = class Box {
 	    constructor(w = 100, h = 100, d = 100, mass = 1) {
 	        this.shape = new Mesh(new BoxGeometry(w, h, d), exports.material);
-	    exports.scene.add(this.shape);
+	        exports.scene.add(this.shape);
 
-	    threeMeshes.push(this.shape);
+	        threeMeshes.push(this.shape);
 	    
-	    this._physShape = new PhysBox(new Vec3(w/2, h/2, d/2));
-	      this.physShape = new Body({ mass: mass });
+	        this._physShape = new PhysBox(new Vec3(w/2, h/2, d/2));
+	        this.physShape = new Body({ mass: mass });
 
-	      this.physShape.addShape(this._physShape);
-	    exports.world.addBody(this.physShape);
+	        this.physShape.addShape(this._physShape);
+	        exports.world.addBody(this.physShape);
 
-	    physMeshes.push(this.physShape);
+	        physMeshes.push(this.physShape);
 	  }
 
 
@@ -58428,9 +58428,9 @@ void main() {
 	        const rot = mesh.physShape.quaternion;
 
 	        exports.world.removeBody(mesh.physShape);
-	    this.shape.add(mesh.shape);
-	    this.physShape.addShape(mesh._physShape, pos, rot);
-	    return this;
+	        this.shape.add(mesh.shape);
+	        this.physShape.addShape(mesh._physShape, pos, rot);
+	        return this;
 	    }
 
 	    setPosition(x = 0, y = 0, z = 0) {
@@ -59730,7 +59730,7 @@ void main() {
 	        if (infinite) {
 	            this.shape = new Mesh(new PlaneGeometry(exports.camera.far, exports.camera.far), exports.material);
 	            this.shape.position.x = exports.camera.position.x;
-	            this.shape.position.z = exports.camera.position.z;
+	            this.shape.position.y = exports.camera.position.z;
 	            exports.scene.add(this.shape);
 
 	            threeMeshes.push(this.shape);

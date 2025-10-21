@@ -13,7 +13,7 @@ class Plane {
         if (infinite) {
             this.shape = new Mesh(new PlaneGeometry(camera.far, camera.far), material);
             this.shape.position.x = camera.position.x;
-            this.shape.position.z = camera.position.z;
+            this.shape.position.y = camera.position.z;
             scene.add(this.shape);
 
             threeMeshes.push(this.shape);
