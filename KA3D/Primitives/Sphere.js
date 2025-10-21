@@ -7,8 +7,6 @@ import { physMeshes, threeMeshes } from "../Render.js";
 
 import { Euler } from "../../src/three/src/math/Euler.js";
 import { Quaternion } from "../../src/three/src/math/Quaternion.js";
-
-
 class Sphere {
     constructor(radius = 1, mass = 1) {
         this.shape = new Mesh(new SphereGeometry(radius), material);

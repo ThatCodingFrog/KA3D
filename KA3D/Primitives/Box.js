@@ -11,17 +11,17 @@ import { Quaternion } from "../../src/three/src/math/Quaternion.js";
 class Box {
     constructor(w = 100, h = 100, d = 100, mass = 1) {
         this.shape = new Mesh(new BoxGeometry(w, h, d), material);
-    scene.add(this.shape);
+        scene.add(this.shape);
 
-    threeMeshes.push(this.shape);
+        threeMeshes.push(this.shape);
     
-    this._physShape = new PhysBox(new Vec3(w/2, h/2, d/2))
-      this.physShape = new Body({ mass: mass });
+        this._physShape = new PhysBox(new Vec3(w/2, h/2, d/2))
+        this.physShape = new Body({ mass: mass });
 
-      this.physShape.addShape(this._physShape);
-    world.addBody(this.physShape);
+        this.physShape.addShape(this._physShape);
+        world.addBody(this.physShape);
 
-    physMeshes.push(this.physShape);
+        physMeshes.push(this.physShape);
   }
 
 
@@ -30,9 +30,9 @@ class Box {
         const rot = mesh.physShape.quaternion;
 
         world.removeBody(mesh.physShape);
-    this.shape.add(mesh.shape);
-    this.physShape.addShape(mesh._physShape, pos, rot);
-    return this;
+        this.shape.add(mesh.shape);
+        this.physShape.addShape(mesh._physShape, pos, rot);
+        return this;
     }
 
     setPosition(x = 0, y = 0, z = 0) {

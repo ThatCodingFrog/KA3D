@@ -292,7 +292,7 @@ var KA3D = (function (exports) {
 	 * vector.applyQuaternion( quaternion );
 	 * ```
 	 */
-	let Quaternion$2 = class Quaternion {
+	let Quaternion$1 = class Quaternion {
 
 		/**
 		 * Constructs a new quaternion.
@@ -2472,7 +2472,7 @@ var KA3D = (function (exports) {
 	}
 
 	const _vector$5 = /*@__PURE__*/ new Vector3();
-	const _quaternion$2 = /*@__PURE__*/ new Quaternion$2();
+	const _quaternion$2 = /*@__PURE__*/ new Quaternion$1();
 
 	const REVISION = '181dev';
 
@@ -5154,7 +5154,7 @@ var KA3D = (function (exports) {
 	}
 
 	const _matrix = /*@__PURE__*/ new Matrix4();
-	const _quaternion$1 = /*@__PURE__*/ new Quaternion$2();
+	const _quaternion$1 = /*@__PURE__*/ new Quaternion$1();
 
 	/**
 	 * A class representing Euler angles.
@@ -5172,7 +5172,7 @@ var KA3D = (function (exports) {
 	 * b.applyEuler(a);
 	 * ```
 	 */
-	let Euler$1 = class Euler {
+	class Euler {
 
 		/**
 		 * Constructs a new euler instance.
@@ -5585,7 +5585,7 @@ var KA3D = (function (exports) {
 
 		}
 
-	};
+	}
 
 	/**
 	 * The default Euler angle order.
@@ -5594,7 +5594,7 @@ var KA3D = (function (exports) {
 	 * @type {string}
 	 * @default 'XYZ'
 	 */
-	Euler$1.DEFAULT_ORDER = 'XYZ';
+	Euler.DEFAULT_ORDER = 'XYZ';
 
 	/**
 	 * A layers object assigns an 3D object to 1 or more of 32
@@ -6330,13 +6330,13 @@ var KA3D = (function (exports) {
 	let _object3DId = 0;
 
 	const _v1$3 = /*@__PURE__*/ new Vector3();
-	const _q1 = /*@__PURE__*/ new Quaternion$2();
+	const _q1 = /*@__PURE__*/ new Quaternion$1();
 	const _m1$3 = /*@__PURE__*/ new Matrix4();
 	const _target = /*@__PURE__*/ new Vector3();
 
 	const _position = /*@__PURE__*/ new Vector3();
 	const _scale = /*@__PURE__*/ new Vector3();
-	const _quaternion = /*@__PURE__*/ new Quaternion$2();
+	const _quaternion = /*@__PURE__*/ new Quaternion$1();
 
 	const _xAxis = /*@__PURE__*/ new Vector3( 1, 0, 0 );
 	const _yAxis = /*@__PURE__*/ new Vector3( 0, 1, 0 );
@@ -6457,8 +6457,8 @@ var KA3D = (function (exports) {
 			this.up = Object3D.DEFAULT_UP.clone();
 
 			const position = new Vector3();
-			const rotation = new Euler$1();
-			const quaternion = new Quaternion$2();
+			const rotation = new Euler();
+			const quaternion = new Quaternion$1();
 			const scale = new Vector3( 1, 1, 1 );
 
 			function onRotationChange() {
@@ -8017,7 +8017,7 @@ var KA3D = (function (exports) {
 			 * @type {Euler}
 			 * @default (0,0,0)
 			 */
-			this.backgroundRotation = new Euler$1();
+			this.backgroundRotation = new Euler();
 
 			/**
 			 * Attenuates the color of the environment. Only influences environment maps
@@ -8035,7 +8035,7 @@ var KA3D = (function (exports) {
 			 * @type {Euler}
 			 * @default (0,0,0)
 			 */
-			this.environmentRotation = new Euler$1();
+			this.environmentRotation = new Euler();
 
 			/**
 			 * Forces everything in the scene to be rendered with the defined material. It is possible
@@ -11359,7 +11359,7 @@ var KA3D = (function (exports) {
 	 * in [Hessian normal form]{@link http://mathworld.wolfram.com/HessianNormalForm.html}
 	 * by a unit length normal vector and a constant.
 	 */
-	class Plane {
+	let Plane$1 = class Plane {
 
 		/**
 		 * Constructs a new plane.
@@ -11711,7 +11711,7 @@ var KA3D = (function (exports) {
 
 		}
 
-	}
+	};
 
 	const _sphere$1 = /*@__PURE__*/ new Sphere$1();
 	const _defaultSpriteCenter = /*@__PURE__*/ new Vector2( 0.5, 0.5 );
@@ -11736,7 +11736,7 @@ var KA3D = (function (exports) {
 		 * @param {Plane} [p4] - The fifth plane that encloses the frustum.
 		 * @param {Plane} [p5] - The sixth plane that encloses the frustum.
 		 */
-		constructor( p0 = new Plane(), p1 = new Plane(), p2 = new Plane(), p3 = new Plane(), p4 = new Plane(), p5 = new Plane() ) {
+		constructor( p0 = new Plane$1(), p1 = new Plane$1(), p2 = new Plane$1(), p3 = new Plane$1(), p4 = new Plane$1(), p5 = new Plane$1() ) {
 
 			/**
 			 * This array holds the planes that enclose the frustum.
@@ -18686,7 +18686,7 @@ void main() {
 			 * @type {Euler}
 			 * @default (0,0,0)
 			 */
-			this.envMapRotation = new Euler$1();
+			this.envMapRotation = new Euler();
 
 			/**
 			 * How to combine the result of the surface's color with the environment map, if any.
@@ -26516,7 +26516,7 @@ void main() {
 	};
 
 	const _rgb = { r: 0, b: 0, g: 0 };
-	const _e1$1 = /*@__PURE__*/ new Euler$1();
+	const _e1$1 = /*@__PURE__*/ new Euler();
 	const _m1$1 = /*@__PURE__*/ new Matrix4();
 
 	function WebGLBackground( renderer, cubemaps, cubeuvmaps, state, objects, alpha, premultipliedAlpha ) {
@@ -27630,7 +27630,7 @@ void main() {
 			localClippingEnabled = false,
 			renderingShadows = false;
 
-		const plane = new Plane(),
+		const plane = new Plane$1(),
 			viewNormalMatrix = new Matrix3(),
 
 			uniform = { value: null, needsUpdate: false };
@@ -43295,7 +43295,7 @@ void main() {
 
 	}
 
-	const _e1 = /*@__PURE__*/ new Euler$1();
+	const _e1 = /*@__PURE__*/ new Euler();
 	const _m1 = /*@__PURE__*/ new Matrix4();
 
 	function WebGLMaterials( renderer, properties ) {
@@ -49028,7 +49028,7 @@ void main() {
 	 * @see http://en.wikipedia.org/wiki/Quaternion
 	 */
 
-	let Quaternion$1 = class Quaternion {
+	class Quaternion {
 	  constructor(x, y, z, w) {
 	    if (x === void 0) {
 	      x = 0;
@@ -49499,7 +49499,7 @@ void main() {
 	    return target;
 	  }
 
-	};
+	}
 	const sfv_t1 = new Vec3();
 	const sfv_t2 = new Vec3();
 
@@ -49648,7 +49648,7 @@ void main() {
 	    }
 
 	    this.position = new Vec3();
-	    this.quaternion = new Quaternion$1();
+	    this.quaternion = new Quaternion();
 
 	    if (options.position) {
 	      this.position.copy(options.position);
@@ -49746,7 +49746,7 @@ void main() {
 	  }
 
 	}
-	const tmpQuat$1 = new Quaternion$1();
+	const tmpQuat$1 = new Quaternion();
 
 	/**
 	 * A set of polygons describing a convex shape.
@@ -50963,10 +50963,10 @@ void main() {
 	    this.timeLastSleepy = 0;
 	    this.wakeUpAfterNarrowphase = false;
 	    this.torque = new Vec3();
-	    this.quaternion = new Quaternion$1();
-	    this.initQuaternion = new Quaternion$1();
-	    this.previousQuaternion = new Quaternion$1();
-	    this.interpolatedQuaternion = new Quaternion$1();
+	    this.quaternion = new Quaternion();
+	    this.initQuaternion = new Quaternion();
+	    this.previousQuaternion = new Quaternion();
+	    this.interpolatedQuaternion = new Quaternion();
 
 	    if (options.quaternion) {
 	      this.quaternion.copy(options.quaternion);
@@ -51146,7 +51146,7 @@ void main() {
 
 	  addShape(shape, _offset, _orientation) {
 	    const offset = new Vec3();
-	    const orientation = new Quaternion$1();
+	    const orientation = new Quaternion();
 
 	    if (_offset) {
 	      offset.copy(_offset);
@@ -51510,7 +51510,7 @@ void main() {
 	  type: 'sleep'
 	};
 	const tmpVec = new Vec3();
-	const tmpQuat = new Quaternion$1();
+	const tmpQuat = new Quaternion();
 	const updateAABB_shapeAABB = new AABB();
 	const uiw_m1 = new Mat3();
 	const uiw_m2 = new Mat3();
@@ -51693,7 +51693,7 @@ void main() {
 
 	const Broadphase_collisionPairs_r = new Vec3();
 	new Vec3();
-	new Quaternion$1();
+	new Quaternion();
 	new Vec3();
 	const Broadphase_makePairsUnique_temp = {
 	  keys: []
@@ -52526,7 +52526,7 @@ void main() {
 	const v1 = new Vec3();
 	const v2 = new Vec3();
 	const intersectBody_xi = new Vec3();
-	const intersectBody_qi = new Quaternion$1();
+	const intersectBody_qi = new Quaternion();
 	const intersectPoint = new Vec3();
 	const a = new Vec3();
 	const b = new Vec3();
@@ -53334,7 +53334,86 @@ void main() {
 	  }
 
 	}
-	new Vec3();
+
+	/**
+	 * A plane, facing in the Z direction. The plane has its surface at z=0 and everything below z=0 is assumed to be solid plane. To make the plane face in some other direction than z, you must put it inside a Body and rotate that body. See the demos.
+	 * @example
+	 *     const planeShape = new CANNON.Plane()
+	 *     const planeBody = new CANNON.Body({ mass: 0, shape:  planeShape })
+	 *     planeBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0) // make it face up
+	 *     world.addBody(planeBody)
+	 */
+	class PhysPlane extends Shape {
+	  /** worldNormal */
+
+	  /** worldNormalNeedsUpdate */
+	  constructor() {
+	    super({
+	      type: Shape.types.PLANE
+	    }); // World oriented normal
+
+	    this.worldNormal = new Vec3();
+	    this.worldNormalNeedsUpdate = true;
+	    this.boundingSphereRadius = Number.MAX_VALUE;
+	  }
+	  /** computeWorldNormal */
+
+
+	  computeWorldNormal(quat) {
+	    const n = this.worldNormal;
+	    n.set(0, 0, 1);
+	    quat.vmult(n, n);
+	    this.worldNormalNeedsUpdate = false;
+	  }
+
+	  calculateLocalInertia(mass, target) {
+	    if (target === void 0) {
+	      target = new Vec3();
+	    }
+
+	    return target;
+	  }
+
+	  volume() {
+	    return (// The plane is infinite...
+	      Number.MAX_VALUE
+	    );
+	  }
+
+	  calculateWorldAABB(pos, quat, min, max) {
+	    // The plane AABB is infinite, except if the normal is pointing along any axis
+	    tempNormal.set(0, 0, 1); // Default plane normal is z
+
+	    quat.vmult(tempNormal, tempNormal);
+	    const maxVal = Number.MAX_VALUE;
+	    min.set(-maxVal, -maxVal, -maxVal);
+	    max.set(maxVal, maxVal, maxVal);
+
+	    if (tempNormal.x === 1) {
+	      max.x = pos.x;
+	    } else if (tempNormal.x === -1) {
+	      min.x = pos.x;
+	    }
+
+	    if (tempNormal.y === 1) {
+	      max.y = pos.y;
+	    } else if (tempNormal.y === -1) {
+	      min.y = pos.y;
+	    }
+
+	    if (tempNormal.z === 1) {
+	      max.z = pos.z;
+	    } else if (tempNormal.z === -1) {
+	      min.z = pos.z;
+	    }
+	  }
+
+	  updateBoundingSphereRadius() {
+	    this.boundingSphereRadius = Number.MAX_VALUE;
+	  }
+
+	}
+	const tempNormal = new Vec3();
 	new Vec3();
 	new Vec3();
 	new Vec3();
@@ -55188,8 +55267,8 @@ void main() {
 	const averageContactPointB = new Vec3();
 	const tmpVec1 = new Vec3();
 	const tmpVec2 = new Vec3();
-	const tmpQuat1 = new Quaternion$1();
-	const tmpQuat2 = new Quaternion$1();
+	const tmpQuat1 = new Quaternion();
+	const tmpQuat2 = new Quaternion();
 
 	const planeTrimesh_normal = new Vec3();
 	const planeTrimesh_relpos = new Vec3();
@@ -55283,7 +55362,7 @@ void main() {
 	const particlePlane_projected = new Vec3();
 	const particleSphere_normal = new Vec3(); // WIP
 
-	const cqj = new Quaternion$1();
+	const cqj = new Quaternion();
 	const convexParticle_local = new Vec3();
 	new Vec3();
 	const convexParticle_penetratedFaceNormal = new Vec3();
@@ -56890,7 +56969,7 @@ void main() {
 			 * @type {Euler}
 			 * @default (0,0,0)
 			 */
-			this.envMapRotation = new Euler$1();
+			this.envMapRotation = new Euler();
 
 			/**
 			 * How to combine the result of the surface's color with the environment map, if any.
@@ -57328,7 +57407,7 @@ void main() {
 			 * @type {Euler}
 			 * @default (0,0,0)
 			 */
-			this.envMapRotation = new Euler$1();
+			this.envMapRotation = new Euler();
 
 			/**
 			 * Scales the effect of the environment map by multiplying its color.
@@ -58360,8 +58439,8 @@ void main() {
 	    }
 
 	    setRotation(x = 0, y = 0, z = 0) {
-	        var euler = new Euler$1(x, y, z, "YXZ");
-	        var quat = new Quaternion$2().setFromEuler(euler);
+	        var euler = new Euler(x, y, z, "YXZ");
+	        var quat = new Quaternion$1().setFromEuler(euler);
 	        this.physShape.quaternion.copy(quat);
 	        return this;
 	    }
@@ -59431,7 +59510,7 @@ void main() {
 
 	    setRotation(x = 0, y = 0, z = 0) {
 	        var euler = new Euler(x, y, z, "YXZ");
-	        var quat = new Quaternion().setFromEuler(euler);
+	        var quat = new Quaternion$1().setFromEuler(euler);
 	        this.physShape.quaternion.copy(quat);
 	        return this;
 	    }
@@ -59639,8 +59718,69 @@ void main() {
 	    }
 
 	    setRotation(x = 0, y = 0, z = 0) {
-	        var euler = new Euler$1(x, y, z, "YXZ");
-	        var quat = new Quaternion$2().setFromEuler(euler);
+	        var euler = new Euler(x, y, z, "YXZ");
+	        var quat = new Quaternion$1().setFromEuler(euler);
+	        this.physShape.quaternion.copy(quat);
+	        return this;
+	    }
+	}
+
+	class Plane {
+	    constructor(w = 100, h = 100, mass = 1, infinite = false) {
+	        if (infinite) {
+	            this.shape = new Mesh(new PlaneGeometry(exports.camera.far, exports.camera.far), exports.material);
+	            this.shape.position.x = exports.camera.position.x;
+	            this.shape.position.z = exports.camera.position.z;
+	            exports.scene.add(this.shape);
+
+	            threeMeshes.push(this.shape);
+
+	            this._physShape = new PhysPlane();
+	            this.physShape = new Body({ mass: mass });
+
+	            this.physShape.addShape(this._physShape);
+	            exports.world.addBody(this.physShape);
+
+	            this.setRotation(Math.PI / 2, 0, 0);
+
+	            physMeshes.push(this.physShape);
+	        }
+	        else {
+	            this.shape = new Mesh(new PlaneGeometry(w, h), exports.material);
+	            exports.scene.add(this.shape);
+
+	            threeMeshes.push(this.shape);
+
+	            this._physShape = new PhysBox(new Vec3(w/2, h/2, 0.001));
+	            this.physShape = new Body({ mass: mass });
+
+	            this.physShape.addShape(this._physShape);
+	            exports.world.addBody(this.physShape);
+
+	            this.setRotation(Math.PI / 2, 0, 0);
+
+	            physMeshes.push(this.physShape);
+	        }
+	    }
+
+	    add(mesh) {
+	        const pos = mesh.physShape.position;
+	        const rot = mesh.physShape.quaternion;
+
+	        exports.world.removeBody(mesh.physShape);
+	        this.shape.add(mesh.shape);
+	        this.physShape.addShape(mesh._physShape, pos, rot);
+	        return this;
+	    }
+
+	    setPosition(x = 0, y = 0, z = 0) {
+	        this.physShape.position.set(x, y, z);
+	        return this;
+	    }
+
+	    setRotation(x = 0, y = 0, z = 0) {
+	        var euler = new Euler(x, y, z, "YXZ");
+	        var quat = new Quaternion$1().setFromEuler(euler);
 	        this.physShape.quaternion.copy(quat);
 	        return this;
 	    }
@@ -59649,15 +59789,19 @@ void main() {
 	exports.AMBIENT = AMBIENT;
 	exports.AddLight = AddLight;
 	exports.BASIC = BASIC;
+	exports.BackSide = BackSide;
 	exports.Box = Box$1;
 	exports.Cylinder = Cylinder;
 	exports.DIRECTIONAL = DIRECTIONAL;
+	exports.DoubleSide = DoubleSide;
 	exports.EnablePhysics = EnablePhysics;
+	exports.FrontSide = FrontSide;
 	exports.Init = Init;
 	exports.NORMAL = NORMAL;
 	exports.PHONG = PHONG;
 	exports.PHYSICAL = PHYSICAL;
 	exports.POINT = POINT;
+	exports.Plane = Plane;
 	exports.Render = Render;
 	exports.SPOT = SPOT;
 	exports.SetMaterial = SetMaterial;

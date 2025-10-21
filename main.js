@@ -5,6 +5,7 @@ export * from "./KA3D/Primitives/Box.js";
 export * from "./KA3D/AddLight.js";
 export * from "./KA3D/Primitives/Cylinder.js";
 export * from "./KA3D/Primitives/Sphere.js";
+export * from "./KA3D/Primitives/Plane.js";
 
-
-export { Vec3 } from "./src/physics/cannon-es.js"
+export { Vec3 } from "./src/physics/cannon-es.js";
+export { FrontSide, BackSide, DoubleSide } from "./src/three/src/constants.js";

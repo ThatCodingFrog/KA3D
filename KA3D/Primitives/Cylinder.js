@@ -5,6 +5,8 @@ import { scene, world } from "../Init.js";
 import { material } from "../SetMaterial.js";
 import { physMeshes, threeMeshes } from "../Render.js";
 
+import { Euler } from "../../src/three/src/math/Euler.js";
+import { Quaternion } from "../../src/three/src/math/Quaternion.js";
 
 class Cylinder {
     constructor(radiusTop = 1, radiusBottom = 1, height = 2, segments = 8, mass = 1) {
