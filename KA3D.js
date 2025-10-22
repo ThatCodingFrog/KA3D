@@ -53334,86 +53334,7 @@ void main() {
 	  }
 
 	}
-
-	/**
-	 * A plane, facing in the Z direction. The plane has its surface at z=0 and everything below z=0 is assumed to be solid plane. To make the plane face in some other direction than z, you must put it inside a Body and rotate that body. See the demos.
-	 * @example
-	 *     const planeShape = new CANNON.Plane()
-	 *     const planeBody = new CANNON.Body({ mass: 0, shape:  planeShape })
-	 *     planeBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0) // make it face up
-	 *     world.addBody(planeBody)
-	 */
-	class PhysPlane extends Shape {
-	  /** worldNormal */
-
-	  /** worldNormalNeedsUpdate */
-	  constructor() {
-	    super({
-	      type: Shape.types.PLANE
-	    }); // World oriented normal
-
-	    this.worldNormal = new Vec3();
-	    this.worldNormalNeedsUpdate = true;
-	    this.boundingSphereRadius = Number.MAX_VALUE;
-	  }
-	  /** computeWorldNormal */
-
-
-	  computeWorldNormal(quat) {
-	    const n = this.worldNormal;
-	    n.set(0, 0, 1);
-	    quat.vmult(n, n);
-	    this.worldNormalNeedsUpdate = false;
-	  }
-
-	  calculateLocalInertia(mass, target) {
-	    if (target === void 0) {
-	      target = new Vec3();
-	    }
-
-	    return target;
-	  }
-
-	  volume() {
-	    return (// The plane is infinite...
-	      Number.MAX_VALUE
-	    );
-	  }
-
-	  calculateWorldAABB(pos, quat, min, max) {
-	    // The plane AABB is infinite, except if the normal is pointing along any axis
-	    tempNormal.set(0, 0, 1); // Default plane normal is z
-
-	    quat.vmult(tempNormal, tempNormal);
-	    const maxVal = Number.MAX_VALUE;
-	    min.set(-maxVal, -maxVal, -maxVal);
-	    max.set(maxVal, maxVal, maxVal);
-
-	    if (tempNormal.x === 1) {
-	      max.x = pos.x;
-	    } else if (tempNormal.x === -1) {
-	      min.x = pos.x;
-	    }
-
-	    if (tempNormal.y === 1) {
-	      max.y = pos.y;
-	    } else if (tempNormal.y === -1) {
-	      min.y = pos.y;
-	    }
-
-	    if (tempNormal.z === 1) {
-	      max.z = pos.z;
-	    } else if (tempNormal.z === -1) {
-	      min.z = pos.z;
-	    }
-	  }
-
-	  updateBoundingSphereRadius() {
-	    this.boundingSphereRadius = Number.MAX_VALUE;
-	  }
-
-	}
-	const tempNormal = new Vec3();
+	new Vec3();
 	new Vec3();
 	new Vec3();
 	new Vec3();
@@ -59726,12 +59647,12 @@ void main() {
 	}
 
 	class Plane {
-	    constructor(w = 100, h = 100, mass = 1, infinite = false) {
-	        if (infinite) {
-	            this.shape = new Mesh(new PlaneGeometry(exports.camera.far, exports.camera.far), exports.material);
-	            this.shape.position.x = exports.camera.position.x;
-	            this.shape.position.y = exports.camera.position.z;
-	            exports.scene.add(this.shape);
+	    constructor(w = 100, h = 100, mass = 1) {
+	        /*if (infinite) {
+	            this.shape = new Mesh(new PlaneGeometry(camera.far, camera.far), material);
+	            this.shape.position.x = camera.position.x;
+	            this.shape.position.y = camera.position.z;
+	            scene.add(this.shape);
 
 	            threeMeshes.push(this.shape);
 
@@ -59739,13 +59660,13 @@ void main() {
 	            this.physShape = new Body({ mass: mass });
 
 	            this.physShape.addShape(this._physShape);
-	            exports.world.addBody(this.physShape);
+	            world.addBody(this.physShape);
 
 	            this.setRotation(Math.PI / 2, 0, 0);
 
 	            physMeshes.push(this.physShape);
 	        }
-	        else {
+	        else {*/
 	            this.shape = new Mesh(new PlaneGeometry(w, h), exports.material);
 	            exports.scene.add(this.shape);
 
@@ -59760,7 +59681,342 @@ void main() {
 	            this.setRotation(Math.PI / 2, 0, 0);
 
 	            physMeshes.push(this.physShape);
+	        //}
+	    }
+
+	    add(mesh) {
+	        const pos = mesh.physShape.position;
+	        const rot = mesh.physShape.quaternion;
+
+	        exports.world.removeBody(mesh.physShape);
+	        this.shape.add(mesh.shape);
+	        this.physShape.addShape(mesh._physShape, pos, rot);
+	        return this;
+	    }
+
+	    setPosition(x = 0, y = 0, z = 0) {
+	        this.physShape.position.set(x, y, z);
+	        return this;
+	    }
+
+	    setRotation(x = 0, y = 0, z = 0) {
+	        var euler = new Euler(x, y, z, "YXZ");
+	        var quat = new Quaternion$1().setFromEuler(euler);
+	        this.physShape.quaternion.copy(quat);
+	        return this;
+	    }
+	}
+
+	/**
+	 * A geometry class for representing a cone.
+	 *
+	 * ```js
+	 * const geometry = new THREE.ConeGeometry( 5, 20, 32 );
+	 * const material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+	 * const cone = new THREE.Mesh(geometry, material );
+	 * scene.add( cone );
+	 * ```
+	 *
+	 * @augments CylinderGeometry
+	 */
+	class ConeGeometry extends CylinderGeometry {
+
+		/**
+		 * Constructs a new cone geometry.
+		 *
+		 * @param {number} [radius=1] - Radius of the cone base.
+		 * @param {number} [height=1] - Height of the cone.
+		 * @param {number} [radialSegments=32] - Number of segmented faces around the circumference of the cone.
+		 * @param {number} [heightSegments=1] - Number of rows of faces along the height of the cone.
+		 * @param {boolean} [openEnded=false] - Whether the base of the cone is open or capped.
+		 * @param {number} [thetaStart=0] - Start angle for first segment, in radians.
+		 * @param {number} [thetaLength=Math.PI*2] - The central angle, often called theta, of the circular sector, in radians.
+		 * The default value results in a complete cone.
+		 */
+		constructor( radius = 1, height = 1, radialSegments = 32, heightSegments = 1, openEnded = false, thetaStart = 0, thetaLength = Math.PI * 2 ) {
+
+			super( 0, radius, height, radialSegments, heightSegments, openEnded, thetaStart, thetaLength );
+
+			this.type = 'ConeGeometry';
+
+			/**
+			 * Holds the constructor parameters that have been
+			 * used to generate the geometry. Any modification
+			 * after instantiation does not change the geometry.
+			 *
+			 * @type {Object}
+			 */
+			this.parameters = {
+				radius: radius,
+				height: height,
+				radialSegments: radialSegments,
+				heightSegments: heightSegments,
+				openEnded: openEnded,
+				thetaStart: thetaStart,
+				thetaLength: thetaLength
+			};
+
+		}
+
+		/**
+		 * Factory method for creating an instance of this class from the given
+		 * JSON object.
+		 *
+		 * @param {Object} data - A JSON object representing the serialized geometry.
+		 * @return {ConeGeometry} A new instance.
+		 */
+		static fromJSON( data ) {
+
+			return new ConeGeometry( data.radius, data.height, data.radialSegments, data.heightSegments, data.openEnded, data.thetaStart, data.thetaLength );
+
+		}
+
+	}
+
+	class Cone {
+	    constructor(radius = 1, height = 2, segments = 8, mass = 1) {
+	        this.shape = new Mesh(new ConeGeometry(radius, height, segments), exports.material);
+	        exports.scene.add(this.shape);
+
+	        threeMeshes.push(this.shape);
+
+	        this._physShape = new PhysCylinder(0, radius, height, segments);
+	        this.physShape = new Body({ mass: mass });
+
+	        this.physShape.addShape(this._physShape);
+	        exports.world.addBody(this.physShape);
+
+	        physMeshes.push(this.physShape);
+	    }
+
+	    add(mesh) {
+	        const pos = mesh.physShape.position;
+	        const rot = mesh.physShape.quaternion;
+
+	        exports.world.removeBody(mesh.physShape);
+	        this.shape.add(mesh.shape);
+	        this.physShape.addShape(mesh._physShape, pos, rot);
+	        return this;
+	    }
+
+	    setPosition(x = 0, y = 0, z = 0) {
+	        this.physShape.position.set(x, y, z);
+	        return this;
+	    }
+
+	    setRotation(x = 0, y = 0, z = 0) {
+	        var euler = new Euler(x, y, z, "YXZ");
+	        var quat = new Quaternion$1().setFromEuler(euler);
+	        this.physShape.quaternion.copy(quat);
+	        return this;
+	    }
+	}
+
+	/**
+	 * A geometry class for representing an torus.
+	 *
+	 * ```js
+	 * const geometry = new THREE.TorusGeometry( 10, 3, 16, 100 );
+	 * const material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+	 * const torus = new THREE.Mesh( geometry, material );
+	 * scene.add( torus );
+	 * ```
+	 *
+	 * @augments BufferGeometry
+	 */
+	class TorusGeometry extends BufferGeometry {
+
+		/**
+		 * Constructs a new torus geometry.
+		 *
+		 * @param {number} [radius=1] - Radius of the torus, from the center of the torus to the center of the tube.
+		 * @param {number} [tube=0.4] - Radius of the tube. Must be smaller than `radius`.
+		 * @param {number} [radialSegments=12] - The number of radial segments.
+		 * @param {number} [tubularSegments=48] - The number of tubular segments.
+		 * @param {number} [arc=Math.PI*2] - Central angle in radians.
+		 */
+		constructor( radius = 1, tube = 0.4, radialSegments = 12, tubularSegments = 48, arc = Math.PI * 2 ) {
+
+			super();
+
+			this.type = 'TorusGeometry';
+
+			/**
+			 * Holds the constructor parameters that have been
+			 * used to generate the geometry. Any modification
+			 * after instantiation does not change the geometry.
+			 *
+			 * @type {Object}
+			 */
+			this.parameters = {
+				radius: radius,
+				tube: tube,
+				radialSegments: radialSegments,
+				tubularSegments: tubularSegments,
+				arc: arc
+			};
+
+			radialSegments = Math.floor( radialSegments );
+			tubularSegments = Math.floor( tubularSegments );
+
+			// buffers
+
+			const indices = [];
+			const vertices = [];
+			const normals = [];
+			const uvs = [];
+
+			// helper variables
+
+			const center = new Vector3();
+			const vertex = new Vector3();
+			const normal = new Vector3();
+
+			// generate vertices, normals and uvs
+
+			for ( let j = 0; j <= radialSegments; j ++ ) {
+
+				for ( let i = 0; i <= tubularSegments; i ++ ) {
+
+					const u = i / tubularSegments * arc;
+					const v = j / radialSegments * Math.PI * 2;
+
+					// vertex
+
+					vertex.x = ( radius + tube * Math.cos( v ) ) * Math.cos( u );
+					vertex.y = ( radius + tube * Math.cos( v ) ) * Math.sin( u );
+					vertex.z = tube * Math.sin( v );
+
+					vertices.push( vertex.x, vertex.y, vertex.z );
+
+					// normal
+
+					center.x = radius * Math.cos( u );
+					center.y = radius * Math.sin( u );
+					normal.subVectors( vertex, center ).normalize();
+
+					normals.push( normal.x, normal.y, normal.z );
+
+					// uv
+
+					uvs.push( i / tubularSegments );
+					uvs.push( j / radialSegments );
+
+				}
+
+			}
+
+			// generate indices
+
+			for ( let j = 1; j <= radialSegments; j ++ ) {
+
+				for ( let i = 1; i <= tubularSegments; i ++ ) {
+
+					// indices
+
+					const a = ( tubularSegments + 1 ) * j + i - 1;
+					const b = ( tubularSegments + 1 ) * ( j - 1 ) + i - 1;
+					const c = ( tubularSegments + 1 ) * ( j - 1 ) + i;
+					const d = ( tubularSegments + 1 ) * j + i;
+
+					// faces
+
+					indices.push( a, b, d );
+					indices.push( b, c, d );
+
+				}
+
+			}
+
+			// build geometry
+
+			this.setIndex( indices );
+			this.setAttribute( 'position', new Float32BufferAttribute( vertices, 3 ) );
+			this.setAttribute( 'normal', new Float32BufferAttribute( normals, 3 ) );
+			this.setAttribute( 'uv', new Float32BufferAttribute( uvs, 2 ) );
+
+		}
+
+		copy( source ) {
+
+			super.copy( source );
+
+			this.parameters = Object.assign( {}, source.parameters );
+
+			return this;
+
+		}
+
+		/**
+		 * Factory method for creating an instance of this class from the given
+		 * JSON object.
+		 *
+		 * @param {Object} data - A JSON object representing the serialized geometry.
+		 * @return {TorusGeometry} A new instance.
+		 */
+		static fromJSON( data ) {
+
+			return new TorusGeometry( data.radius, data.tube, data.radialSegments, data.tubularSegments, data.arc );
+
+		}
+
+	}
+
+	//getFaces function written by Brave Search Assist
+	function getFaces(mesh) {
+	    const faces = [];
+	    const position = mesh.geometry.getAttribute('position');
+	    const index = mesh.geometry.getIndex();
+
+	    if (index !== null) {
+	        for (let i = 0; i < index.count; i += 3) {
+	            const face = [
+	                index.getX(i),
+	                index.getX(i+2),
+	                index.getX(i+1)
+	            ];
+	            faces.push(face);
 	        }
+	    } else {
+	        // For non-indexed geometries, faces are defined by consecutive vertices
+	        for (let i = 0; i < position.count; i += 3) {
+	            const face = [i, i+2, i+1];
+	            faces.push(face);
+	        }
+	    }
+	    return faces;
+	}   
+
+
+	class Torus {
+	    constructor(radius = 1, tubeThickness = 0.5, radialSegments = 8, tubularSegements = 6, mass = 1) {
+	        this.shape = new Mesh(new TorusGeometry(radius, tubeThickness, radialSegments, tubularSegements), exports.material);
+	        exports.scene.add(this.shape);
+
+	        threeMeshes.push(this.shape);
+
+	        var faces = getFaces(this.shape);
+	        var vertices = [];
+
+	        for (let i = 0; i < this.shape.geometry.attributes.position.count; i++) {
+	            vertices.push(
+	                new Vec3(
+	                    this.shape.geometry.attributes.position.getX(i),
+	                    this.shape.geometry.attributes.position.getY(i),
+	                    this.shape.geometry.attributes.position.getZ(i)
+	                )
+	            );
+	        }
+
+	        //console.log(vertices, faces, this.shape.geometry);
+
+	        this._physShape = new ConvexPolyhedron({vertices: vertices, faces: faces});
+	        this.physShape = new Body({ mass: mass });
+
+	        this.physShape.addShape(this._physShape);
+	        exports.world.addBody(this.physShape);
+
+	        physMeshes.push(this.physShape);
 	    }
 
 	    add(mesh) {
@@ -59791,6 +60047,7 @@ void main() {
 	exports.BASIC = BASIC;
 	exports.BackSide = BackSide;
 	exports.Box = Box$1;
+	exports.Cone = Cone;
 	exports.Cylinder = Cylinder;
 	exports.DIRECTIONAL = DIRECTIONAL;
 	exports.DoubleSide = DoubleSide;
@@ -59807,6 +60064,7 @@ void main() {
 	exports.SetMaterial = SetMaterial;
 	exports.Sphere = Sphere;
 	exports.TOON = TOON;
+	exports.Torus = Torus;
 	exports.Vec3 = Vec3;
 	exports.physMeshes = physMeshes;
 	exports.threeMeshes = threeMeshes;

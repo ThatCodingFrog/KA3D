@@ -9,7 +9,7 @@ import { Euler } from "../../src/three/src/math/Euler.js";
 import { Quaternion } from "../../src/three/src/math/Quaternion.js";
 
 class Plane {
-    constructor(w = 100, h = 100, mass = 1, infinite = false) {
+    constructor(w = 100, h = 100, mass = 1) {
         /*if (infinite) {
             this.shape = new Mesh(new PlaneGeometry(camera.far, camera.far), material);
             this.shape.position.x = camera.position.x;
